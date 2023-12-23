@@ -1,0 +1,11 @@
+{
+	"id": "impresario-plugin",
+	"name": "Impresario",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Documentation production system.",
+	"author": "Jeet Sukumaran",
+	"authorUrl": "https://obsidian.md",
+	"fundingUrl": "https://obsidian.md/pricing",
+	"isDesktopOnly": false
+}
