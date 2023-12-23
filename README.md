@@ -45,7 +45,7 @@ All the output formats are supported with default options and custom tweaks.
 
 The UI is clunky and ugly, but enough to get the job done.
 
-Settings/ options/ customizations of rlanned.
+Settings/ options/ customizations of planned.
 
 ## License
 
