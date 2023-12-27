@@ -17,7 +17,7 @@ import {
 	TFile,
 } from 'obsidian';
 // import * as child_process from 'child_process'
-import { spawn } from "child_process"
+import { spawn, exec } from "child_process"
 import * as path from "path"
 
 // Custom View
@@ -262,7 +262,6 @@ class ProductionSetupModal extends Modal {
 			)
 			this.outputAbsolutePath = this.composeAbsolutePath(this.outputSubpath)
 			outputAnnotationContainer.setText(this.outputAbsolutePath)
-			console.log(outputDirectoryInput.value)  // Changed from textContent to value
 		};
 
 		formatDropdown.addEventListener('change', updateAnnotation);
@@ -328,7 +327,7 @@ class ProductionSetupModal extends Modal {
 			"--resource-path", this.vaultRootPath,
 			this.sourceFileAbsolutePath,
 			"-o", outputAbsolutePath,
-			"--lua-filter", this.composeResourcePath("pandoc", "filters", "pdcites.lua")
+			"--lua-filter", this.composeResourcePath("pandoc", "filters", "pdcites.lua"),
 			// "--verbose",
 		];
 		if (configArgs.outputFormat === "beamer") {
@@ -371,12 +370,15 @@ class ProductionSetupModal extends Modal {
 		);
 		modal.open();
 		try {
-			const process = spawn(commandPath, commandArgs, { cwd: this.vaultRootPath });
+			// const process = spawn(commandPath, commandArgs, { cwd: this.vaultRootPath });
+			const process = exec(commandPath + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
 			modal.registerStartedProcess()
-			process.stdout.on('data', (data) => {
+			process.stdout?.on('data', (data) => {
+				// console.log(data)
 				modal.appendOutput(`stdout: ${data}`);
 			});
-			process.stderr.on('data', (data) => {
+			process.stderr?.on('data', (data) => {
+				// console.log(data)
 				modal.appendOutput(`stderr: ${data}`);
 			});
 			process.on('close', (code) => {
