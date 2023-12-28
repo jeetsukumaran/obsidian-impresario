@@ -400,6 +400,7 @@ class ProductionSetupModal extends Modal {
 			// const process = exec(commandPath + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
 			// const process = exec("ls" + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
 			// const process = exec("echo $PATH")
+			modal.setMessage("Starting production run")
 			modal.registerStartedProcess()
 			process.stdout?.on('data', (data) => {
 				// console.log(data)
@@ -411,9 +412,9 @@ class ProductionSetupModal extends Modal {
 			});
 			process.on('close', (code) => {
 				if (code === 0) {
-					modal.appendMessage(`Document successfully produced: '${outputAbsolutePath}'`);
+					modal.setMessage(`Document successfully produced: '${outputAbsolutePath}'`);
 				} else {
-					modal.appendMessage(`Document production failed with code: ${code}`);
+					modal.setMessage(`Document production failed with code: ${code}`);
 				}
 				modal.registerClosedProcess()
 			});
@@ -502,9 +503,9 @@ class OutputModal extends Modal {
         // this.copyCommandBtn.onclick = () => this.copyToClipboard(command);
 
         // Message Section
-        this.contentEl.createEl('h3', { text: 'Message' });
+        this.contentEl.createEl('h3', { text: 'Status' });
         this.messageEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
-        this.messageEl.setText("(Running Production)");
+        this.messageEl.setText("Running production ...");
 
         // Output Section
         // this.contentEl.createEl('h3', { text: 'Output' });
@@ -551,6 +552,12 @@ class OutputModal extends Modal {
     //     this.closeBtn.removeAttribute('disabled'); // Enable close button after appending output
     // }
 
+    setMessage(text: string) {
+		this.messageEl.empty()
+        const rowEl = this.messageEl.createEl('div', {cls: ["console-display-inner-row"]});
+        rowEl.setText(text)
+        this.closeBtn.removeAttribute('disabled'); // Enable close button after appending message
+    }
     appendMessage(text: string) {
         // let currentText = this.messageEl.getText();
         // this.messageEl.setText(`${currentText}\n${text}`);
@@ -570,10 +577,12 @@ class OutputModal extends Modal {
     }
 
     appendError(text: string) {
-        // let currentText = this.errorEl.getText();
-        // this.errorEl.setText(`${currentText}\n${text}`);
-        const rowEl = this.errorEl.createEl('div', {cls: ["console-display-inner-row"]});
-        rowEl.setText(text)
+        let currentText = this.errorEl.getText();
+        this.errorEl.setText(`${currentText}\n${text}`);
+
+        // const rowEl = this.errorEl.createEl('div', {cls: ["console-display-inner-row"]});
+        // rowEl.setText(text)
+
         // this.copyErrorBtn.removeAttribute('disabled'); // Enable copy button after appending error
         this.closeBtn.removeAttribute('disabled'); // Enable close button after appending error
     }
