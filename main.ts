@@ -403,22 +403,22 @@ class ProductionSetupModal extends Modal {
 			modal.registerStartedProcess()
 			process.stdout?.on('data', (data) => {
 				// console.log(data)
-				modal.appendOutput(`stdout: ${data}`);
+				modal.appendOutput(data);
 			});
 			process.stderr?.on('data', (data) => {
 				// console.log(data)
-				modal.appendOutput(`stderr: ${data}`);
+				modal.appendError(data);
 			});
 			process.on('close', (code) => {
 				if (code === 0) {
-					modal.appendOutput(`Document successfully produced: '${outputAbsolutePath}'`);
+					modal.appendMessage(`Document successfully produced: '${outputAbsolutePath}'`);
 				} else {
-					modal.appendOutput(`Document production failed with code: ${code}`);
+					modal.appendMessage(`Document production failed with code: ${code}`);
 				}
 				modal.registerClosedProcess()
 			});
 		} catch (err) {
-			modal.appendOutput(`Failed to produce document: ${err}`);
+			modal.appendMessage(`Failed to produce document: ${err}`);
 			// setTimeout(() => modal.close(), 2000); // Close the modal after 2 seconds
 		}
 	}
@@ -472,7 +472,9 @@ class Producer {
 class OutputModal extends Modal {
     commandEl: HTMLElement;
     destinationEl: HTMLElement;
+    messageEl: HTMLElement;
     outputEl: HTMLElement;
+    errorEl: HTMLElement;
     copyCommandBtn: HTMLButtonElement;
     closeBtn: HTMLButtonElement;
     copyOutputBtn: HTMLButtonElement;
@@ -503,16 +505,25 @@ class OutputModal extends Modal {
         this.copyCommandBtn = this.contentEl.createEl('button', { text: 'Copy Command' });
         this.copyCommandBtn.onclick = () => this.copyToClipboard(command);
 
+        // Message Section
+        this.contentEl.createEl('h3', { text: 'Message' });
+        this.messageEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
+        this.messageEl.setText("(Running Production)");
 
         // Output Section
         this.contentEl.createEl('h3', { text: 'Output' });
         this.outputEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
         this.outputEl.setText("(Running Production)");
 
+        // Error Section
+        this.contentEl.createEl('h3', { text: 'Error' });
+		this.errorEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
+        this.errorEl.setText("(Running Production)");
+
         // Button to copy output
-        this.copyOutputBtn = this.contentEl.createEl('button', { text: 'Copy Output' });
-        this.copyOutputBtn.setAttribute('disabled', 'true'); // Disable button initially
-        this.copyOutputBtn.onclick = () => this.copyToClipboard(this.outputEl.getText());
+        // this.copyOutputBtn = this.contentEl.createEl('button', { text: 'Copy Output' });
+        // this.copyOutputBtn.setAttribute('disabled', 'true'); // Disable button initially
+        // this.copyOutputBtn.onclick = () => this.copyToClipboard(this.outputEl.getText());
 
         // Done Button
         this.doneBtn = this.contentEl.createEl('button', { text: 'Done' });
@@ -522,6 +533,25 @@ class OutputModal extends Modal {
         // Close (Process continues running in background!)
         this.closeBtn = this.contentEl.createEl('button', { text: 'Close' });
         this.closeBtn.onclick = () => this.close();
+
+    }
+
+    // appendOutput(text: string) {
+    //     // let currentText = this.outputEl.getText();
+    //     // this.outputEl.setText(`${currentText}\n${text}`);
+    //     const rowEl = this.outputEl.createEl('div', {cls: ["console-display-inner-row"]});
+    //     rowEl.setText(text)
+    //     this.copyOutputBtn.removeAttribute('disabled'); // Enable copy button after appending output
+    //     this.closeBtn.removeAttribute('disabled'); // Enable close button after appending output
+    // }
+
+    appendMessage(text: string) {
+        // let currentText = this.messageEl.getText();
+        // this.messageEl.setText(`${currentText}\n${text}`);
+        const rowEl = this.messageEl.createEl('div', {cls: ["console-display-inner-row"]});
+        rowEl.setText(text)
+        // this.copyMessageBtn.removeAttribute('disabled'); // Enable copy button after appending message
+        this.closeBtn.removeAttribute('disabled'); // Enable close button after appending message
     }
 
     appendOutput(text: string) {
@@ -529,9 +559,19 @@ class OutputModal extends Modal {
         // this.outputEl.setText(`${currentText}\n${text}`);
         const rowEl = this.outputEl.createEl('div', {cls: ["console-display-inner-row"]});
         rowEl.setText(text)
-        this.copyOutputBtn.removeAttribute('disabled'); // Enable copy button after appending output
+        // this.copyOutputBtn.removeAttribute('disabled'); // Enable copy button after appending output
         this.closeBtn.removeAttribute('disabled'); // Enable close button after appending output
     }
+
+    appendError(text: string) {
+        // let currentText = this.errorEl.getText();
+        // this.errorEl.setText(`${currentText}\n${text}`);
+        const rowEl = this.errorEl.createEl('div', {cls: ["console-display-inner-row"]});
+        rowEl.setText(text)
+        // this.copyErrorBtn.removeAttribute('disabled'); // Enable copy button after appending error
+        this.closeBtn.removeAttribute('disabled'); // Enable close button after appending error
+    }
+
 
     registerStartedProcess() {
     	this.outputEl.classList.add("process-is-running")

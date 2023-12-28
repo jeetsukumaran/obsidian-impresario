@@ -18,7 +18,6 @@ end
 function Inlines(inlines)
     local newInlines = {}
     for _, inline in ipairs(inlines) do
-        print("---")
         if inline.t == 'Link' then
             local citekey = inline.target:match("^@(.+)$")
 			table.insert(newInlines, replaceWithCitation(inline, citekey))
