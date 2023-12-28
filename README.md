@@ -13,6 +13,43 @@ Simple Pandoc wrapper that sends your Obsidian notes to the show.
 I recognize that the slide level is not metadata and does not belong here.
 But I wanted a way to package this data organically within the document.
 
+### Support for (auto-refactoring!) internal link paths for bibliography
+
+Pandoc natively reads bibliographic data file paths using the "``bibliography``" key:
+
+```yaml
+---
+bibliography: "path/to/refs.bib"
+---
+
+```
+
+```yaml
+---
+bibliography:
+  - "path/to/project/refs1.bib"
+  - "path/to/common/refs2.bib"
+---
+```
+
+Pandoc, however, does not work with Obsidian internal link paths ("`[[path/to/refs1.bib]]`"), which get tracked and updated by Obsidian as I move files around.
+This plugin supports specifying the bibliographical data files as internal links managed by Obsidian, and processes these to be passed as "``--bibliography <path>`` when compiling the document.
+
+```yaml
+---
+production-reference-data: "[[path/to/refs.bib]]"
+---
+
+```
+
+```yaml
+---
+production-reference-data:
+  - "[[path/to/project/refs1.bib]]"
+  - "[[path/to/common/refs2.bib]]"
+---
+```
+
 ### Nice templates
 
 Currently focusing on developing only PDF's (articles etc.), Beamer presentations (PDF), and HTML presentations (reveal.js etc.).
