@@ -476,6 +476,7 @@ class OutputModal extends Modal {
     outputEl: HTMLElement;
     errorEl: HTMLElement;
     copyCommandBtn: HTMLButtonElement;
+	copyDestinationBtn: HTMLButtonElement;
     closeBtn: HTMLButtonElement;
     copyOutputBtn: HTMLButtonElement;
     doneBtn: HTMLButtonElement;
@@ -498,8 +499,14 @@ class OutputModal extends Modal {
 
         // Result Section
         this.contentEl.createEl('h3', { text: 'Destination' });
-        this.destinationEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
+        this.destinationEl = this.contentEl.createEl(
+			'div',
+			{cls: ["console-display-inner"]}
+        );
+		this.destinationEl.style.height = "6rem";
         this.destinationEl.setText(outputSubpath);
+        this.copyDestinationBtn = this.contentEl.createEl('button', { text: 'Copy Command' });
+        this.copyDestinationBtn.onclick = () => this.copyToClipboard(outputSubpath);
 
         // Button to copy command
         // this.copyCommandBtn = this.contentEl.createEl('button', { text: 'Copy Command' });
