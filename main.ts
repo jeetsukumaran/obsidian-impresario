@@ -370,8 +370,10 @@ class ProductionSetupModal extends Modal {
 		);
 		modal.open();
 		try {
-			// const process = spawn(commandPath, commandArgs, { cwd: this.vaultRootPath });
-			const process = exec(commandPath + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
+			const process = spawn(commandPath, commandArgs, { cwd: this.vaultRootPath });
+			// const process = exec(commandPath + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
+			// const process = exec("ls" + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
+			// const process = exec("echo $PATH")
 			modal.registerStartedProcess()
 			process.stdout?.on('data', (data) => {
 				// console.log(data)

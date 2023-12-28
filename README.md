@@ -37,6 +37,24 @@ In combination with the built-in "`wikilinks_title_after_pipe`" extension and a 
 
 Specifying a Pandoc citation token, which is a "@" character followed by the citekey ("`@cite-key`") as the title or display for an Obsidian internal link will result in the link markup elements being stripped and the citekey processed as a regular Pandoc citation.
 
+### Issues/limitations
+
+#### Link parsing
+
+The link needs to be separated from surrounding text by spaces to be seen by `wikilinks_title_after_pipe`:
+
+This works:
+
+```
+[[discovery/sources/references/s/sole2000|@sole2000]] : Signs of life: how complexity pervades biology
+```
+
+But this fails:
+
+```
+[[discovery/sources/references/s/sole2000|@sole2000]]: Signs of life: how complexity pervades biology
+```
+
 ## Development State
 
 Working alpha.
