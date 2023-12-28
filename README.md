@@ -37,7 +37,23 @@ In combination with the built-in "`wikilinks_title_after_pipe`" extension and a 
 
 Specifying a Pandoc citation token, which is a "@" character followed by the citekey ("`@cite-key`") as the title or display for an Obsidian internal link will result in the link markup elements being stripped and the citekey processed as a regular Pandoc citation.
 
+## Development State
+
+Working alpha.
+
+All the output formats are supported with default options and custom tweaks.
+
+The UI is clunky and ugly, but enough to get the job done.
+
+Settings/ options/ customizations of planned.
+
 ### Issues/limitations
+
+#### Application path
+
+Sometimes paths in my `.bashrc` get added to the shell that spawns, sometimes they do not.
+If Impresario cannot find pandoc, either set the path to the program in the Settings explicitly, or link or otherwise place the Pandoc executable on one of the system default paths.
+
 
 #### Link parsing
 
@@ -54,16 +70,6 @@ But this fails:
 ```
 [[discovery/sources/references/s/sole2000|@sole2000]]: Signs of life: how complexity pervades biology
 ```
-
-## Development State
-
-Working alpha.
-
-All the output formats are supported with default options and custom tweaks.
-
-The UI is clunky and ugly, but enough to get the job done.
-
-Settings/ options/ customizations of planned.
 
 ## License
 
