@@ -179,7 +179,10 @@ class ProductionSetupModal extends Modal {
 		return this.composeAbsolutePath(this.sourceFilePath)
 	}
 
-    readDefaultString(key: string, defaultValue?: string): string {
+	readPropertyString(
+		key: string,
+		defaultValue?: string
+	): string {
 		if (!this.metadataCache?.frontmatter?.[key]) {
 			return defaultValue || defaultValue || ""
 		}
@@ -189,15 +192,33 @@ class ProductionSetupModal extends Modal {
 		} else {
 			return propertyValue.toString()
 		}
-    }
+	}
+
+	readPropertyList(
+		key: string,
+		defaultValue?: string[],
+	): string[] {
+		if (!this.metadataCache?.frontmatter?.[key]) {
+			return defaultValue || []
+		}
+		let propertyValue = this.metadataCache?.frontmatter?.[key] || ""
+		if (!propertyValue) {
+			return []
+		}
+		if (Array.isArray(propertyValue)) {
+			return propertyValue
+		} else {
+			return [propertyValue.toString()]
+		}
+	}
 
     defaultOutputFormat(): string {
     	// return this.readDefaultString("production-output-format", "beamer")
-    	return this.readDefaultString("production-output-format", "pdf")
+    	return this.readPropertyString("production-output-format", "pdf")
     }
 
     defaultOutputDirectory(): string {
-    	return this.readDefaultString(
+    	return this.readPropertyString(
 			"production-output-directory",
 			// this.composeAbsolutePath(this.sourceFileSubdirectory)
 			this.sourceFileSubdirectory,
@@ -205,13 +226,12 @@ class ProductionSetupModal extends Modal {
     }
 
     defaultSlideLevel(): string {
-    	return this.readDefaultString(
+    	return this.readPropertyString(
 			"production-slide-level",
 			// this.composeAbsolutePath(this.sourceFileSubdirectory)
 			"2",
     	)
     }
-
 
 	onOpen() {
 		let { contentEl } = this;
@@ -352,6 +372,12 @@ class ProductionSetupModal extends Modal {
 		}
 		if (true) {
 			args.push("--citeproc")
+			let bibliographyDataPaths: string[] = []
+			bibliographyDataPaths.push(
+				... this.readPropertyList("production-reference-data")
+					.map( (item: string) => item?.replace(/^\[\[/g, "").replace(/\]\]$/g,"") )
+			)
+			bibliographyDataPaths.forEach( (bdPath) => args.push(... ["--bibliography", bdPath]) )
 		}
 		return args
 	}
