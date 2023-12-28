@@ -20,11 +20,9 @@ function Inlines(inlines)
     for _, inline in ipairs(inlines) do
         print("---")
         if inline.t == 'Link' then
-        	print("Link: " .. inline.target)
             local citekey = inline.target:match("^@(.+)$")
 			table.insert(newInlines, replaceWithCitation(inline, citekey))
         elseif inline.t == 'Str' then
-        	print("Str: " .. inline.text)
             local citekey = inline.text:match("^@(.+)$")
 			table.insert(newInlines, replaceWithCitation(inline, citekey))
         else
