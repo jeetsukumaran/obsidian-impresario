@@ -502,8 +502,8 @@ class OutputModal extends Modal {
         this.destinationEl.setText(outputSubpath);
 
         // Button to copy command
-        this.copyCommandBtn = this.contentEl.createEl('button', { text: 'Copy Command' });
-        this.copyCommandBtn.onclick = () => this.copyToClipboard(command);
+        // this.copyCommandBtn = this.contentEl.createEl('button', { text: 'Copy Command' });
+        // this.copyCommandBtn.onclick = () => this.copyToClipboard(command);
 
         // Message Section
         this.contentEl.createEl('h3', { text: 'Message' });
