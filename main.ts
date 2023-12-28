@@ -513,7 +513,6 @@ class OutputModal extends Modal {
         // Output Section
         this.contentEl.createEl('h3', { text: 'Output' });
         this.outputEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
-        this.outputEl.setText("(Running Production)");
 
         // Error Section
         this.contentEl.createEl('h3', { text: 'Error' });
@@ -574,13 +573,13 @@ class OutputModal extends Modal {
 
 
     registerStartedProcess() {
-    	this.outputEl.classList.add("process-is-running")
-    	this.outputEl.classList.remove("process-is-closed")
+    	this.messageEl.classList.add("process-is-running")
+    	this.messageEl.classList.remove("process-is-closed")
     }
 
     registerClosedProcess() {
-    	this.outputEl.classList.remove("process-is-running")
-    	this.outputEl.classList.add("process-is-closed")
+    	this.messageEl.classList.remove("process-is-running")
+    	this.messageEl.classList.add("process-is-closed")
     }
 
     private copyToClipboard(text: string) {
