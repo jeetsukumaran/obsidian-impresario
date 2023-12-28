@@ -497,17 +497,6 @@ class OutputModal extends Modal {
         this.copyCommandBtn = this.contentEl.createEl('button', { text: 'Copy Command' });
         this.copyCommandBtn.onclick = () => this.copyToClipboard(command);
 
-        // Result Section
-        this.contentEl.createEl('h3', { text: 'Destination' });
-        this.destinationEl = this.contentEl.createEl(
-			'div',
-			{cls: ["console-display-inner"]}
-        );
-		this.destinationEl.style.height = "6rem";
-        this.destinationEl.setText(outputSubpath);
-        this.copyDestinationBtn = this.contentEl.createEl('button', { text: 'Copy Command' });
-        this.copyDestinationBtn.onclick = () => this.copyToClipboard(outputSubpath);
-
         // Button to copy command
         // this.copyCommandBtn = this.contentEl.createEl('button', { text: 'Copy Command' });
         // this.copyCommandBtn.onclick = () => this.copyToClipboard(command);
@@ -518,13 +507,24 @@ class OutputModal extends Modal {
         this.messageEl.setText("(Running Production)");
 
         // Output Section
-        this.contentEl.createEl('h3', { text: 'Output' });
-        this.outputEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
+        // this.contentEl.createEl('h3', { text: 'Output' });
+        // this.outputEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
 
         // Error Section
-        this.contentEl.createEl('h3', { text: 'Error' });
+        this.contentEl.createEl('h3', { text: 'Pandoc' });
 		this.errorEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
-        this.errorEl.setText("(Running Production)");
+
+        // Result Section
+        this.contentEl.createEl('h3', { text: 'Destination' });
+        this.destinationEl = this.contentEl.createEl(
+			'div',
+			{cls: ["console-display-inner"]}
+        );
+		this.destinationEl.style.height = "6rem";
+        this.destinationEl.setText(outputSubpath);
+        this.copyDestinationBtn = this.contentEl.createEl('button', { text: 'Copy Path' });
+        this.copyDestinationBtn.onclick = () => this.copyToClipboard(outputSubpath);
+
 
         // Button to copy output
         // this.copyOutputBtn = this.contentEl.createEl('button', { text: 'Copy Output' });
