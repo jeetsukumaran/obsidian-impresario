@@ -110,6 +110,6 @@ But this fails:
 
 ## License
 
-obsidian-impressario © 2023 by Jeet Sukumaran is licensed under Attribution-ShareAlike 4.0 International.
+obsidian-impresario © 2023 by Jeet Sukumaran is licensed under Attribution-ShareAlike 4.0 International.
 See LICENSE.md for more information.
 
