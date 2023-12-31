@@ -315,7 +315,7 @@ class ProductionSetupModal extends Modal {
 			"plugins",
 			"obsidian-impresario",
 			"resources",
-			"publication",
+			// "publication",
 			... subpaths,
 		)
 	}
