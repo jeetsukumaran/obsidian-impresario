@@ -235,26 +235,13 @@ class ProductionSetupModal extends Modal {
 
 	onOpen() {
 		let { contentEl } = this;
-		contentEl.createEl('h2', { text: 'Production Setup' });
 
-		contentEl.createEl("h3", { text: "Parameters" });
-		contentEl.createEl("h4", { text: "Slide Level" });
+		contentEl.createEl("h3", { text: "Production Output" });
 
-		const slideLevelContainer: HTMLElement = contentEl.createEl("div", {"cls": "impresario-modal-input-container"})
-		// let slideLevelInput = slideLevelContainer.createEl('input', { type: 'number', value: this.defaultSlideLevel(), cls: ["impresario-modal-input-element"] });
-		let slideLevelInput = slideLevelContainer.createEl('input', {
-			type: 'number',
-			cls: ["impresario-modal-input-element"]
-		});
-		slideLevelInput.value = this.defaultSlideLevel()
-		slideLevelInput.setAttribute('min', '0'); // Set 'min' attribute separately
-
-		contentEl.createEl("h3", { text: "Output" });
 		contentEl.createEl("h4", { text: "Output Format" });
 
 		const outputFormatContainer: HTMLElement = contentEl.createEl("div", {cls: "impresario-modal-input-container"})
 		let formatDropdown = outputFormatContainer.createEl('select', {cls: ["impresario-modal-input-element"]});
-
 		Object.entries(this.outputFormatMap).forEach(([formatName, formatExtension]) => {
 			let option = formatDropdown.createEl('option', { text: formatName, value: formatName });
 			if (formatName === this.defaultOutputFormat()) {
@@ -264,17 +251,14 @@ class ProductionSetupModal extends Modal {
 
 		contentEl.createEl("h4", { text: "Output Directory" });
 		const outputDirectoryInputContainer: HTMLElement = contentEl.createEl("div", {cls: "impresario-modal-input-container"})
-
 		let outputDirectoryInput = outputDirectoryInputContainer.createEl('textarea', {
 			cls: ["impresario-modal-input-element"],
 		});
 		outputDirectoryInput.textContent = this.defaultOutputDirectory()
-
 		contentEl.createEl("h4", { text: "Output Path" });
 		let outputAnnotationContainer = contentEl.createEl('div', {
 			cls: ["impresario-modal-annotation"],
 		});
-
 		const updateAnnotation = () => {
 			this.outputSubpath = this.composeOutputSubpath(
 				formatDropdown.value || "",
@@ -283,12 +267,19 @@ class ProductionSetupModal extends Modal {
 			this.outputAbsolutePath = this.composeAbsolutePath(this.outputSubpath)
 			outputAnnotationContainer.setText(this.outputAbsolutePath)
 		};
-
 		formatDropdown.addEventListener('change', updateAnnotation);
 		outputDirectoryInput.addEventListener('input', updateAnnotation);
-
-
 		updateAnnotation(); // Initial update
+
+		contentEl.createEl("h3", { text: "Production Parameters" });
+		contentEl.createEl("h4", { text: "Slide Level" });
+		const slideLevelContainer: HTMLElement = contentEl.createEl("div", {"cls": "impresario-modal-input-container"})
+		let slideLevelInput = slideLevelContainer.createEl('input', {
+			type: 'number',
+			cls: ["impresario-modal-input-element"]
+		});
+		slideLevelInput.value = this.defaultSlideLevel()
+		slideLevelInput.setAttribute('min', '0'); // Set 'min' attribute separately
 
 		const finalButtonsContainer = contentEl.createEl("div", { cls: ["impresario-modal-final-buttons-container"] });
 		const runButton = finalButtonsContainer.createEl('button', {
