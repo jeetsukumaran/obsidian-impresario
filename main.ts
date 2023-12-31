@@ -358,12 +358,13 @@ class ProductionSetupModal extends Modal {
 			// Alexey Gumirov <ag_devops@die-optimisten.net>
 			args.push(... [
 				"-H", this.composeResourcePath(
+					"publication",
 					"pandoc",
 					"templates",
 					"beamer-preamble.tex"
 				),
 				"--template", this.composeResourcePath(
-					this.vaultRootPath,
+					"publication",
 					"pandoc",
 					"templates",
 					"default_mod.latex",
