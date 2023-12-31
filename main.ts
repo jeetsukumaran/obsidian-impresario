@@ -347,7 +347,12 @@ class ProductionSetupModal extends Modal {
 			"--resource-path", this.vaultRootPath,
 			this.sourceFileAbsolutePath,
 			"-o", outputAbsolutePath,
-			"--lua-filter", this.composeResourcePath("pandoc", "filters", "pdcites.lua"),
+			"--lua-filter", this.composeResourcePath(
+				"publication",
+				"pandoc",
+				"filters",
+				"pdcites.lua"
+			),
 			// "--verbose",
 		];
 		if (configArgs.outputFormat === "beamer") {
