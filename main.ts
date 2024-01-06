@@ -460,6 +460,9 @@ class Producer {
 		let outputFormat: string = this.getProductionOutputFormat();
         let defaultSlideLevel: number = 2; // Default value
         let defaultOutputPath: string = 'path/to/default/output'; // Default value
+		if (!this.activeFile.path.endsWith(".md:")) {
+			new Notice("Cannot produce active file: not in Markdown format")
+		}
 		const productionSetupModal = new ProductionSetupModal(app, this.activeFile)
 		productionSetupModal.open();
 	}
