@@ -19,7 +19,7 @@ If your plugin does not need CSS, delete this file.
 }
 
 .process-is-running.console-display-inner {
-	border: solid 2px red;
+	border: solid 2px green;
 }
 
 .process-is-closed.console-display-inner {
