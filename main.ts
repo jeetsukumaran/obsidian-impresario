@@ -367,14 +367,17 @@ class ProductionSetupModal extends Modal {
         ),
       ])
     }
+    let extractPath = (item: string) => item?.replace(/^\[\[/g, "").replace(/\]\]$/g,"");
     if (true) {
       args.push("--citeproc")
       const bibliographyDataPaths: string[] = []
       bibliographyDataPaths.push(
-        ... this.readPropertyList("production-reference-data")
-          .map( (item: string) => item?.replace(/^\[\[/g, "").replace(/\]\]$/g,"") )
+        ... this.readPropertyList("bibliography")
+          .map(extractPath)
       )
       bibliographyDataPaths.forEach( (bdPath) => args.push(... ["--bibliography", bdPath]) )
+      args.push( ... this.readPropertyList("resource-path").map(extractPath) );
+      args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
     }
     return args
   }
