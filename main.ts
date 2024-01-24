@@ -370,10 +370,19 @@ class ProductionSetupModal extends Modal {
                     "boxes.lua"
                 )]);
         }
+        // if (false) {
+        //     args.push(... [
+        //         "--filter", this.composeResourcePath(
+        //             "publication",
+        //             "pandoc",
+        //             "filters",
+        //             "boxes.py"
+        //         )]);
+        // }
         if (configArgs.isVerbose) {
             args.push("--verbose");
         }
-        const extractPath = (item: string) => item?.replace(/^\[\[/g, "").replace(/\]\]$/g,"");
+        const extractPath = (item: string) => item?.trim().replace(/^\[\[/g, "").replace(/\]\]$/g,"");
         if (true) {
             args.push("--citeproc")
             const bibliographyDataPaths: string[] = []
@@ -680,7 +689,8 @@ export default class Impresario extends Plugin {
         this.addCommand({
             id: 'impresario-produce-document',
             name: 'Produce the active file',
-            callback: this.produceActiveFile,
+            // callback: this.produceActiveFile,
+            callback: () => this.produceActiveFile(), // arrow function for lexical closure
         });
         this.addSettingTab(new ImpresarioSettingTab(this.app, this));
     }
