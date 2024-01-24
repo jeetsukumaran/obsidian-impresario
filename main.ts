@@ -131,15 +131,19 @@ class ProductionSetupModal extends Modal {
     metadataCache: CachedMetadata
     vaultRootPath: string
     argumentValueMap: { [key: string]: string | string[] }
+    isAutoOpenOutput: boolean
+    isAutoClose: boolean
 
     constructor(
         app: App,
         sourceFile: TFile,
+        isAutoOpenOutput: boolean,
+        isAutoClose: boolean,
     ) {
         super(app);
-        this.refreshSourceData(sourceFile)
-    // this.vaultRootPath = this.sourceFile.vault.adapter.basePath
-    // console.log(this.sourceFile)
+        this.refreshSourceData(sourceFile);
+        this.isAutoOpenOutput = isAutoOpenOutput;
+        this.isAutoClose = isAutoClose;
     }
 
     refreshSourceData(sourceFile: TFile) {
@@ -453,6 +457,8 @@ class ProductionSetupModal extends Modal {
             app,
             formattedCommand,
             configArgs.outputSubpath,
+            this.isAutoOpenOutput,
+            this.isAutoClose,
         );
         modal.open();
         try {
@@ -527,7 +533,14 @@ class Producer {
             new Notice("Cannot produce active file: not in Markdown format")
             return
         }
-        const productionSetupModal = new ProductionSetupModal(app, this.activeFile)
+        let isAutoOpenOutput = isOpenSetupModal ?  false : true;
+        let isAutoClose = isOpenSetupModal ?  false : true;
+        const productionSetupModal = new ProductionSetupModal(
+            app,
+            this.activeFile,
+            isAutoOpenOutput,
+            isAutoClose,
+        )
         if (isOpenSetupModal) {
             productionSetupModal.open();
         } else {
@@ -554,6 +567,8 @@ class OutputModal extends Modal {
         app: App,
         command: string,
         outputSubpath: string,
+        isAutoOpenOutput: boolean,
+        isAutoClose: boolean,
     ) {
         super(app);
 
