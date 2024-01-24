@@ -562,6 +562,9 @@ class OutputModal extends Modal {
     closeBtn: HTMLButtonElement;
     copyOutputBtn: HTMLButtonElement;
     openDestination: HTMLButtonElement;
+    outputSubpath: string;
+    isAutoOpenOutput: boolean;
+    isAutoClose: boolean;
 
     constructor(
         app: App,
@@ -571,6 +574,10 @@ class OutputModal extends Modal {
         isAutoClose: boolean,
     ) {
         super(app);
+
+        this.outputSubpath = outputSubpath;
+        this.isAutoOpenOutput = isAutoOpenOutput;
+        this.isAutoClose = isAutoClose;
 
         // Command Section
         this.contentEl.createEl('h3', { text: 'Command' });
@@ -674,14 +681,20 @@ class OutputModal extends Modal {
 
 
     registerStartedProcess() {
-        this.messageEl.classList.add("process-is-running")
-        this.messageEl.classList.remove("process-is-closed")
+        this.messageEl.classList.add("process-is-running");
+        this.messageEl.classList.remove("process-is-closed");
     }
 
     registerClosedProcess() {
-        this.messageEl.classList.remove("process-is-running")
-        this.messageEl.classList.add("process-is-closed")
+        this.messageEl.classList.remove("process-is-running");
+        this.messageEl.classList.add("process-is-closed");
         this.openDestination.removeAttribute('disabled');
+        if (this.isAutoOpenOutput) {
+            this.app.workspace.openLinkText(this.outputSubpath, '', "split");
+        }
+        if (this.isAutoClose) {
+            this.close();
+        }
     }
 
     private copyToClipboard(text: string) {
@@ -734,22 +747,22 @@ export default class Impresario extends Plugin {
             this.produceActiveFile(true, false);
         });
         this.addCommand({
-            id: 'impresario-produce',
-            name: 'Produce the active file',
-            // callback: this.produceActiveFile,
-            callback: () => this.produceActiveFile(true, false), // arrow function for lexical closure
-        });
-        this.addCommand({
             id: 'impresario-produce-default',
-            name: 'Produce the active file in the background',
+            name: 'Produce the active file',
             // callback: this.produceActiveFile,
             callback: () => this.produceActiveFile(false, false), // arrow function for lexical closure
         });
         this.addCommand({
             id: 'impresario-produce-default-verbose',
-            name: 'Produce the active file in the background verbosely',
+            name: 'Produce the active file verbosely',
             // callback: this.produceActiveFile,
             callback: () => this.produceActiveFile(false, true), // arrow function for lexical closure
+        });
+        this.addCommand({
+            id: 'impresario-produce-setup',
+            name: 'Set up a production run for the active file',
+            // callback: this.produceActiveFile,
+            callback: () => this.produceActiveFile(true, false), // arrow function for lexical closure
         });
         this.addSettingTab(new ImpresarioSettingTab(this.app, this));
     }
