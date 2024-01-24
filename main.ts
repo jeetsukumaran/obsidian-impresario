@@ -361,6 +361,19 @@ class ProductionSetupModal extends Modal {
     if (configArgs.isVerbose) {
         args.push("--verbose");
     }
+    let extractPath = (item: string) => item?.replace(/^\[\[/g, "").replace(/\]\]$/g,"");
+    if (true) {
+        args.push("--citeproc")
+        const bibliographyDataPaths: string[] = []
+        bibliographyDataPaths.push(
+            ... this.readPropertyList("bibliography")
+            .map(extractPath)
+            // .map( (filePath: string) => path.join(this.vaultRootPath, filePath))
+        )
+        bibliographyDataPaths.forEach( (bdPath) => args.push(... ["--bibliography", bdPath]) )
+        args.push( ... this.readPropertyList("resource-path").map(extractPath) );
+        args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
+    }
     if (configArgs.outputFormat === "beamer") {
       args.push(... [
         "--slide-level", configArgs["slideLevel"] || "2",
@@ -381,18 +394,6 @@ class ProductionSetupModal extends Modal {
           "default_mod.latex",
         ),
       ])
-    }
-    let extractPath = (item: string) => item?.replace(/^\[\[/g, "").replace(/\]\]$/g,"");
-    if (true) {
-      args.push("--citeproc")
-      const bibliographyDataPaths: string[] = []
-      bibliographyDataPaths.push(
-        ... this.readPropertyList("bibliography")
-          .map(extractPath)
-      )
-      bibliographyDataPaths.forEach( (bdPath) => args.push(... ["--bibliography", bdPath]) )
-      args.push( ... this.readPropertyList("resource-path").map(extractPath) );
-      args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
     }
     return args
   }
