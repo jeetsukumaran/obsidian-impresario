@@ -263,7 +263,7 @@ class ProductionSetupModal extends Modal {
         const updateAnnotation = () => {
             this.outputSubpath = this.composeOutputSubpath(
                 formatDropdown.value || "",
-                outputDirectoryInput.value || "",  // Changed from textContent to value
+                outputDirectoryInput.value || "",
             )
             this.outputAbsolutePath = this.composeAbsolutePath(this.outputSubpath)
             outputAnnotationContainer.setText(this.outputAbsolutePath)
@@ -310,6 +310,28 @@ class ProductionSetupModal extends Modal {
                     this.close();
                 });
         });
+    }
+
+    backgroundRun(
+        isVerbose: boolean = false,
+    ) {
+        let outputFormat = this.defaultOutputFormat();
+        let outputDirectory = this.defaultOutputDirectory();
+        let slideLevel = this.defaultSlideLevel();
+        this.outputSubpath = this.composeOutputSubpath(
+            outputFormat || "",
+            outputDirectory || "",  // Changed from textContent to value
+        )
+        this.execute(
+            "pandoc",
+            {
+                outputFormat: outputFormat,
+                outputSubpath: this.outputSubpath,
+                outputAbsolutePath: this.composeAbsolutePath(this.outputSubpath),
+                slideLevel: this.defaultSlideLevel(),
+                verbosity: isVerbose ? "true" : "",
+            },
+        );
     }
 
     composeResourcePath(...subpaths: string[]): string {
@@ -497,16 +519,20 @@ class Producer {
             : 'beamer'; // Default to 'beamer' if not specified
     }
 
-    produce() {
-        const outputFormat: string = this.getProductionOutputFormat();
-        const defaultSlideLevel = 2; // Default value
-        const defaultOutputPath = 'path/to/default/output'; // Default value
+    produce(
+        isOpenSetupModal: boolean = true,
+        isVerboseRun: boolean = false,
+    ) {
         if (!this.activeFile.path.endsWith(".md")) {
             new Notice("Cannot produce active file: not in Markdown format")
             return
         }
         const productionSetupModal = new ProductionSetupModal(app, this.activeFile)
-        productionSetupModal.open();
+        if (isOpenSetupModal) {
+            productionSetupModal.open();
+        } else {
+            productionSetupModal.backgroundRun(isVerboseRun);
+        }
     }
 
 
@@ -687,8 +713,20 @@ export default class Impresario extends Plugin {
             this.produceActiveFile();
         });
         this.addCommand({
-            id: 'impresario-produce-document',
+            id: 'impresario-produce',
             name: 'Produce the active file',
+            // callback: this.produceActiveFile,
+            callback: () => this.produceActiveFile(), // arrow function for lexical closure
+        });
+        this.addCommand({
+            id: 'impresario-produce-default',
+            name: 'Produce the active file in the background',
+            // callback: this.produceActiveFile,
+            callback: () => this.produceActiveFile(), // arrow function for lexical closure
+        });
+        this.addCommand({
+            id: 'impresario-produce-default-verbose',
+            name: 'Produce the active file in the background verbosely',
             // callback: this.produceActiveFile,
             callback: () => this.produceActiveFile(), // arrow function for lexical closure
         });
