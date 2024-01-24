@@ -4,6 +4,7 @@
 
 import {
   App,
+  ButtonComponent,
   Editor,
   MarkdownView,
   Modal,
@@ -281,21 +282,33 @@ class ProductionSetupModal extends Modal {
     slideLevelInput.value = this.defaultSlideLevel()
     slideLevelInput.setAttribute('min', '0'); // Set 'min' attribute separately
 
-    const finalButtonsContainer = contentEl.createEl("div", { cls: ["impresario-modal-final-buttons-container"] });
-    const runButton = finalButtonsContainer.createEl('button', {
-      text: 'Run',
-      type: 'button'
-    }).addEventListener('click', () => {
-      this.execute(
-        "pandoc",
-        {
-          outputFormat: formatDropdown.value,
-          outputSubpath: this.outputSubpath,
-          outputAbsolutePath: this.outputAbsolutePath,
-          slideLevel: slideLevelInput.value,
-        },
-      );
+    contentEl.createEl("br")
+    contentEl.createEl("br")
+    let finalButtonsContainer = new Setting(contentEl)
+    let isVerbose = false;
+    finalButtonsContainer.controlEl.appendChild(document.createTextNode("Verbose"));
+    let verbosityToggle = finalButtonsContainer.addToggle( toggle => {
+        toggle.setValue(isVerbose)
+        .onChange(async (value) => {
+            isVerbose = value;
+        })
+    })
+    finalButtonsContainer.addButton( (button: ButtonComponent) => {
+        button
+        .setButtonText("Produce!")
+        .onClick( () => {
+            this.execute(
+                "pandoc",
+                {
+                    outputFormat: formatDropdown.value,
+                    outputSubpath: this.outputSubpath,
+                    outputAbsolutePath: this.outputAbsolutePath,
+                    slideLevel: slideLevelInput.value,
+                    verbosity: isVerbose ? "true" : "",
+                },
+            );
       this.close();
+        });
     });
   }
 
@@ -344,8 +357,10 @@ class ProductionSetupModal extends Modal {
         "filters",
         "pdcites.lua"
       ),
-      // "--verbose",
     ];
+    if (configArgs.isVerbose) {
+        args.push("--verbose");
+    }
     if (configArgs.outputFormat === "beamer") {
       args.push(... [
         "--slide-level", configArgs["slideLevel"] || "2",
