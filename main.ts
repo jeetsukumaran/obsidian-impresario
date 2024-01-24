@@ -527,13 +527,13 @@ class Producer {
 
     produce(
         isOpenSetupModal: boolean,
+        isAutoOpenOutput: boolean,
         isVerboseRun: boolean,
     ) {
         if (!this.activeFile.path.endsWith(".md")) {
             new Notice("Cannot produce active file: not in Markdown format")
             return
         }
-        let isAutoOpenOutput = isOpenSetupModal ?  false : true;
         let isAutoClose = isOpenSetupModal ?  false : true;
         const productionSetupModal = new ProductionSetupModal(
             app,
@@ -721,6 +721,7 @@ export default class Impresario extends Plugin {
 
     produceActiveFile(
         isOpenSetupModal: boolean,
+        isAutoOpenOutput: boolean,
         isVerboseRun: boolean,
     ) {
         if (!this.app.workspace) {
@@ -734,6 +735,7 @@ export default class Impresario extends Plugin {
         const producer = new Producer(activeFile);
         producer.produce(
             isOpenSetupModal,
+            isAutoOpenOutput,
             isVerboseRun,
         );
     }
@@ -744,25 +746,25 @@ export default class Impresario extends Plugin {
         // this.addRibbonIcon("factory", "Produce!", () => {
         // this.addRibbonIcon("blocks", "Produce!", () => {
         this.addRibbonIcon("theater", "Produce!", () => {
-            this.produceActiveFile(true, false);
+            this.produceActiveFile(true, false, false);
         });
         this.addCommand({
             id: 'impresario-produce-default',
             name: 'Produce the active file',
             // callback: this.produceActiveFile,
-            callback: () => this.produceActiveFile(false, false), // arrow function for lexical closure
+            callback: () => this.produceActiveFile(false, true, false), // arrow function for lexical closure
         });
         this.addCommand({
-            id: 'impresario-produce-default-verbose',
-            name: 'Produce the active file verbosely',
+            id: 'impresario-produce-default-background',
+            name: 'Produce the active file in the background',
             // callback: this.produceActiveFile,
-            callback: () => this.produceActiveFile(false, true), // arrow function for lexical closure
+            callback: () => this.produceActiveFile(false, false, false), // arrow function for lexical closure
         });
         this.addCommand({
             id: 'impresario-produce-setup',
             name: 'Set up a production run for the active file',
             // callback: this.produceActiveFile,
-            callback: () => this.produceActiveFile(true, false), // arrow function for lexical closure
+            callback: () => this.produceActiveFile(true, false, false), // arrow function for lexical closure
         });
         this.addSettingTab(new ImpresarioSettingTab(this.app, this));
     }
