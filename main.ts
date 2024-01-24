@@ -728,13 +728,13 @@ export default class Impresario extends Plugin {
             id: 'impresario-produce-default',
             name: 'Produce the active file in the background',
             // callback: this.produceActiveFile,
-            callback: () => this.produceActiveFile(true, false), // arrow function for lexical closure
+            callback: () => this.produceActiveFile(false, false), // arrow function for lexical closure
         });
         this.addCommand({
             id: 'impresario-produce-default-verbose',
             name: 'Produce the active file in the background verbosely',
             // callback: this.produceActiveFile,
-            callback: () => this.produceActiveFile(true, true), // arrow function for lexical closure
+            callback: () => this.produceActiveFile(false, true), // arrow function for lexical closure
         });
         this.addSettingTab(new ImpresarioSettingTab(this.app, this));
     }
