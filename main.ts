@@ -3,19 +3,19 @@
 // $ npm run build
 
 import {
-  App,
-  ButtonComponent,
-  Editor,
-  MarkdownView,
-  Modal,
-  Notice,
-  Plugin,
-  PluginSettingTab,
-  FileSystemAdapter,
-  Setting,
-  WorkspaceLeaf,
-  CachedMetadata,
-  TFile,
+    App,
+    ButtonComponent,
+    Editor,
+    MarkdownView,
+    Modal,
+    Notice,
+    Plugin,
+    PluginSettingTab,
+    FileSystemAdapter,
+    Setting,
+    WorkspaceLeaf,
+    CachedMetadata,
+    TFile,
 } from 'obsidian';
 // import * as child_process from 'child_process'
 import { spawn, exec } from "child_process"
@@ -26,17 +26,17 @@ import * as path from "path"
 // import { ImpresarioNavigatorView, VIEW_TYPE_APEXNAVIGATOR } from "./view";
 
 interface ImpresarioSettings {
-  artifactsLocation: string;
+    artifactsLocation: string;
 }
 
 const DEFAULT_SETTINGS: ImpresarioSettings = {
-  // artifactsLocation: "artifacts";
-  // current directory
-  artifactsLocation: ".",
+    // artifactsLocation: "artifacts";
+    // current directory
+    artifactsLocation: ".",
 }
 
 let impresarioPropertyProductionParameterMap: {
-  [key: string]: string | string[] | undefined,
+    [key: string]: string | string[] | undefined,
 }
 
 interface FrontmatterCache {
@@ -48,96 +48,96 @@ interface FrontmatterCache {
 
 
 class ProductionParameter {
-  label = "Parameter"
-  value: string | number
+    label = "Parameter"
+    value: string | number
 }
 
 class ProductionSetupModal extends Modal {
 
-  outputFormatMap: { [key: string]: string } = { // {{{
-    asciidoc: '.adoc',
-    asciidoc_legacy: '.asciidoc',
-    asciidoctor: '.adoc',
-    beamer: '.pdf',
-    biblatex: '.bib',
-    bibtex: '.bib',
-    chunkedhtml: '.html',
-    commonmark: '.md',
-    commonmark_x: '.md',
-    context: '.tex',
-    csljson: '.json',
-    docbook: '.xml',
-    docbook4: '.xml',
-    docbook5: '.xml',
-    docx: '.docx',
-    dokuwiki: '.txt',
-    dzslides: '.html',
-    epub: '.epub',
-    epub2: '.epub',
-    epub3: '.epub',
-    fb2: '.fb2',
-    gfm: '.md',
-    haddock: '.haddock',
-    html: '.html',
-    html4: '.html',
-    html5: '.html',
-    icml: '.icml',
-    ipynb: '.ipynb',
-    jats: '.xml',
-    jats_archiving: '.xml',
-    jats_articleauthoring: '.xml',
-    jats_publishing: '.xml',
-    jira: '.txt',
-    json: '.json',
-    latex: '.tex',
-    man: '.man',
-    markdown: '.md',
-    markdown_github: '.md',
-    markdown_mmd: '.md',
-    markdown_phpextra: '.md',
-    markdown_strict: '.md',
-    markua: '.md',
-    mediawiki: '.txt',
-    ms: '.ms',
-    muse: '.muse',
-    native: '.native',
-    odt: '.odt',
-    opendocument: '.odt',
-    opml: '.opml',
-    org: '.org',
-    pdf: '.pdf',
-    plain: '.txt',
-    pptx: '.pptx',
-    revealjs: '.html',
-    rst: '.rst',
-    rtf: '.rtf',
-    s5: '.html',
-    slideous: '.html',
-    slidy: '.html',
-    tei: '.xml',
-    texinfo: '.texi',
-    textile: '.textile',
-    typst: '.typst',
-    xwiki: '.txt',
-    zimwiki: '.txt'
-  };
-  // }}}
+    outputFormatMap: { [key: string]: string } = { // {{{
+        asciidoc: '.adoc',
+        asciidoc_legacy: '.asciidoc',
+        asciidoctor: '.adoc',
+        beamer: '.pdf',
+        biblatex: '.bib',
+        bibtex: '.bib',
+        chunkedhtml: '.html',
+        commonmark: '.md',
+        commonmark_x: '.md',
+        context: '.tex',
+        csljson: '.json',
+        docbook: '.xml',
+        docbook4: '.xml',
+        docbook5: '.xml',
+        docx: '.docx',
+        dokuwiki: '.txt',
+        dzslides: '.html',
+        epub: '.epub',
+        epub2: '.epub',
+        epub3: '.epub',
+        fb2: '.fb2',
+        gfm: '.md',
+        haddock: '.haddock',
+        html: '.html',
+        html4: '.html',
+        html5: '.html',
+        icml: '.icml',
+        ipynb: '.ipynb',
+        jats: '.xml',
+        jats_archiving: '.xml',
+        jats_articleauthoring: '.xml',
+        jats_publishing: '.xml',
+        jira: '.txt',
+        json: '.json',
+        latex: '.tex',
+        man: '.man',
+        markdown: '.md',
+        markdown_github: '.md',
+        markdown_mmd: '.md',
+        markdown_phpextra: '.md',
+        markdown_strict: '.md',
+        markua: '.md',
+        mediawiki: '.txt',
+        ms: '.ms',
+        muse: '.muse',
+        native: '.native',
+        odt: '.odt',
+        opendocument: '.odt',
+        opml: '.opml',
+        org: '.org',
+        pdf: '.pdf',
+        plain: '.txt',
+        pptx: '.pptx',
+        revealjs: '.html',
+        rst: '.rst',
+        rtf: '.rtf',
+        s5: '.html',
+        slideous: '.html',
+        slidy: '.html',
+        tei: '.xml',
+        texinfo: '.texi',
+        textile: '.textile',
+        typst: '.typst',
+        xwiki: '.txt',
+        zimwiki: '.txt'
+    };
+    // }}}
 
-  sourceFile: TFile
-  sourceFilePath: string
-  sourceFileSubdirectory: string
-  outputSubpath: string
-  outputAbsolutePath: string
-  metadataCache: CachedMetadata
-  vaultRootPath: string
-  argumentValueMap: { [key: string]: string | string[] }
+    sourceFile: TFile
+    sourceFilePath: string
+    sourceFileSubdirectory: string
+    outputSubpath: string
+    outputAbsolutePath: string
+    metadataCache: CachedMetadata
+    vaultRootPath: string
+    argumentValueMap: { [key: string]: string | string[] }
 
     constructor(
-    app: App,
-    sourceFile: TFile,
+        app: App,
+        sourceFile: TFile,
     ) {
         super(app);
-    this.refreshSourceData(sourceFile)
+        this.refreshSourceData(sourceFile)
     // this.vaultRootPath = this.sourceFile.vault.adapter.basePath
     // console.log(this.sourceFile)
     }
@@ -145,301 +145,313 @@ class ProductionSetupModal extends Modal {
     refreshSourceData(sourceFile: TFile) {
         this.sourceFile = sourceFile
         this.sourceFilePath = sourceFile.path
-    this.vaultRootPath = this.getVaultBasePath();
-    this.sourceFileSubdirectory = sourceFile.parent?.path || ""
-    this.metadataCache = this.app.metadataCache.getFileCache(this.sourceFile) || {}
+        this.vaultRootPath = this.getVaultBasePath();
+        this.sourceFileSubdirectory = sourceFile.parent?.path || ""
+        this.metadataCache = this.app.metadataCache.getFileCache(this.sourceFile) || {}
     }
 
-  getVaultBasePath(): string {
-    const adapter = app.vault.adapter;
-    if (adapter instanceof FileSystemAdapter) {
-      return adapter.getBasePath();
+    getVaultBasePath(): string {
+        const adapter = app.vault.adapter;
+        if (adapter instanceof FileSystemAdapter) {
+            return adapter.getBasePath();
+        }
+        return "";
     }
-    return "";
-  }
 
-  composeAbsolutePath(subpath: string): string {
-    return path.join(this.vaultRootPath, subpath)
-  }
-
-  composeOutputAbsolutePath(formatName: string, outputSubdirectory: string): string {
-    return this.composeAbsolutePath(this.composeOutputSubpath(formatName, outputSubdirectory))
-  }
-
-  composeOutputSubpath(formatName: string, outputSubdirectory: string): string {
-    return path.join(outputSubdirectory, this.composeOutputBase(formatName))
-  }
-
-  composeOutputBase(formatName: string): string {
-    const sourceFileSubpath = this.sourceFilePath
-    const outputExtension = this.outputFormatMap[formatName] || ""
-    return path.parse(this.sourceFilePath).name + outputExtension
-  }
-
-  get sourceFileAbsolutePath() {
-    return this.composeAbsolutePath(this.sourceFilePath)
-  }
-
-  readPropertyString(
-    key: string,
-    defaultValue?: string
-  ): string {
-    if (!this.metadataCache?.frontmatter?.[key]) {
-      return defaultValue || defaultValue || ""
+    composeAbsolutePath(subpath: string): string {
+        return path.join(this.vaultRootPath, subpath)
     }
-    const propertyValue = this.metadataCache?.frontmatter?.[key] || ""
-    if (Array.isArray(propertyValue)) {
-      return propertyValue.join("")
-    } else {
-      return propertyValue.toString()
-    }
-  }
 
-  readPropertyList(
-    key: string,
-    defaultValue?: string[],
-  ): string[] {
-    if (!this.metadataCache?.frontmatter?.[key]) {
-      return defaultValue || []
+    composeOutputAbsolutePath(formatName: string, outputSubdirectory: string): string {
+        return this.composeAbsolutePath(this.composeOutputSubpath(formatName, outputSubdirectory))
     }
-    const propertyValue = this.metadataCache?.frontmatter?.[key] || ""
-    if (!propertyValue) {
-      return []
+
+    composeOutputSubpath(formatName: string, outputSubdirectory: string): string {
+        return path.join(outputSubdirectory, this.composeOutputBase(formatName))
     }
-    if (Array.isArray(propertyValue)) {
-      return propertyValue
-    } else {
-      return [propertyValue.toString()]
+
+    composeOutputBase(formatName: string): string {
+        const sourceFileSubpath = this.sourceFilePath
+        const outputExtension = this.outputFormatMap[formatName] || ""
+        return path.parse(this.sourceFilePath).name + outputExtension
     }
-  }
+
+    get sourceFileAbsolutePath() {
+        return this.composeAbsolutePath(this.sourceFilePath)
+    }
+
+    readPropertyString(
+        key: string,
+        defaultValue?: string
+    ): string {
+        if (!this.metadataCache?.frontmatter?.[key]) {
+            return defaultValue || defaultValue || ""
+        }
+        const propertyValue = this.metadataCache?.frontmatter?.[key] || ""
+        if (Array.isArray(propertyValue)) {
+            return propertyValue.join("")
+        } else {
+            return propertyValue.toString()
+        }
+    }
+
+    readPropertyList(
+        key: string,
+        defaultValue?: string[],
+    ): string[] {
+        if (!this.metadataCache?.frontmatter?.[key]) {
+            return defaultValue || []
+        }
+        const propertyValue = this.metadataCache?.frontmatter?.[key] || ""
+        if (!propertyValue) {
+            return []
+        }
+        if (Array.isArray(propertyValue)) {
+            return propertyValue
+        } else {
+            return [propertyValue.toString()]
+        }
+    }
 
     defaultOutputFormat(): string {
-      // return this.readDefaultString("production-output-format", "beamer")
-      return this.readPropertyString("production-output-format", "pdf")
+        // return this.readDefaultString("production-output-format", "beamer")
+        return this.readPropertyString("production-output-format", "pdf")
     }
 
     defaultOutputDirectory(): string {
-      return this.readPropertyString(
-      "production-output-directory",
-      // this.composeAbsolutePath(this.sourceFileSubdirectory)
-      this.sourceFileSubdirectory,
-      )
+        return this.readPropertyString(
+            "production-output-directory",
+            // this.composeAbsolutePath(this.sourceFileSubdirectory)
+            this.sourceFileSubdirectory,
+        )
     }
 
     defaultSlideLevel(): string {
-      return this.readPropertyString(
-      "production-slide-level",
-      // this.composeAbsolutePath(this.sourceFileSubdirectory)
-      "2",
-      )
-    }
-
-  onOpen() {
-    const { contentEl } = this;
-
-    contentEl.createEl("h3", { text: "Production Output" });
-
-    contentEl.createEl("h4", { text: "Output Format" });
-
-    const outputFormatContainer: HTMLElement = contentEl.createEl("div", {cls: "impresario-modal-input-container"})
-    const formatDropdown = outputFormatContainer.createEl('select', {cls: ["impresario-modal-input-element"]});
-    Object.entries(this.outputFormatMap).forEach(([formatName, formatExtension]) => {
-      const option = formatDropdown.createEl('option', { text: formatName, value: formatName });
-      if (formatName === this.defaultOutputFormat()) {
-        option.selected = true;
-      }
-    });
-
-    contentEl.createEl("h4", { text: "Output Directory" });
-    const outputDirectoryInputContainer: HTMLElement = contentEl.createEl("div", {cls: "impresario-modal-input-container"})
-    const outputDirectoryInput = outputDirectoryInputContainer.createEl('textarea', {
-      cls: ["impresario-modal-input-element"],
-    });
-    outputDirectoryInput.textContent = this.defaultOutputDirectory()
-    contentEl.createEl("h4", { text: "Output Path" });
-    const outputAnnotationContainer = contentEl.createEl('div', {
-      cls: ["impresario-modal-annotation"],
-    });
-    const updateAnnotation = () => {
-      this.outputSubpath = this.composeOutputSubpath(
-        formatDropdown.value || "",
-        outputDirectoryInput.value || "",  // Changed from textContent to value
-      )
-      this.outputAbsolutePath = this.composeAbsolutePath(this.outputSubpath)
-      outputAnnotationContainer.setText(this.outputAbsolutePath)
-    };
-    formatDropdown.addEventListener('change', updateAnnotation);
-    outputDirectoryInput.addEventListener('input', updateAnnotation);
-    updateAnnotation(); // Initial update
-
-    contentEl.createEl("h3", { text: "Production Parameters" });
-    contentEl.createEl("h4", { text: "Slide Level" });
-    const slideLevelContainer: HTMLElement = contentEl.createEl("div", {"cls": "impresario-modal-input-container"})
-    const slideLevelInput = slideLevelContainer.createEl('input', {
-      type: 'number',
-      cls: ["impresario-modal-input-element"]
-    });
-    slideLevelInput.value = this.defaultSlideLevel()
-    slideLevelInput.setAttribute('min', '0'); // Set 'min' attribute separately
-
-    contentEl.createEl("br")
-    contentEl.createEl("br")
-    let finalButtonsContainer = new Setting(contentEl)
-    let isVerbose = false;
-    finalButtonsContainer.controlEl.appendChild(document.createTextNode("Verbose"));
-    let verbosityToggle = finalButtonsContainer.addToggle( toggle => {
-        toggle.setValue(isVerbose)
-        .onChange(async (value) => {
-            isVerbose = value;
-        })
-    })
-    finalButtonsContainer.addButton( (button: ButtonComponent) => {
-        button
-        .setButtonText("Produce!")
-        .onClick( () => {
-            this.execute(
-                "pandoc",
-                {
-                    outputFormat: formatDropdown.value,
-                    outputSubpath: this.outputSubpath,
-                    outputAbsolutePath: this.outputAbsolutePath,
-                    slideLevel: slideLevelInput.value,
-                    verbosity: isVerbose ? "true" : "",
-                },
-            );
-      this.close();
-        });
-    });
-  }
-
-  composeResourcePath(...subpaths: string[]): string {
-    return path.join(
-      this.vaultRootPath,
-      ".obsidian",
-      "plugins",
-      "obsidian-impresario",
-      "resources",
-      // "publication",
-      ... subpaths,
-    )
-  }
-
-  composeArgs(
-    configArgs: { [key:string]: string }
-  ): string[] {
-    const outputAbsolutePath = configArgs.outputAbsolutePath
-    const fromElements = [
-      // "markdown_strict",
-      "markdown",
-      // "mediawiki_links",
-      "wikilinks_title_after_pipe",
-      "pipe_tables",
-      "backtick_code_blocks",
-      "auto_identifiers",
-      "strikeout",
-      "yaml_metadata_block",
-      "implicit_figures",
-      "smart",
-      "fenced_divs",
-      "citations",
-      "link_attributes",
-    ]
-    const args = [
-      "--from", fromElements.join("+"),
-      "--standalone",
-      "-t", configArgs.outputFormat,
-      "--resource-path", this.vaultRootPath,
-      this.sourceFileAbsolutePath,
-      "-o", outputAbsolutePath,
-      "--lua-filter", this.composeResourcePath(
-        "publication",
-        "pandoc",
-        "filters",
-        "pdcites.lua"
-      ),
-    ];
-    if (configArgs.isVerbose) {
-        args.push("--verbose");
-    }
-    let extractPath = (item: string) => item?.replace(/^\[\[/g, "").replace(/\]\]$/g,"");
-    if (true) {
-        args.push("--citeproc")
-        const bibliographyDataPaths: string[] = []
-        bibliographyDataPaths.push(
-            ... this.readPropertyList("bibliography")
-            .map(extractPath)
-            // .map( (filePath: string) => path.join(this.vaultRootPath, filePath))
+        return this.readPropertyString(
+            "production-slide-level",
+            // this.composeAbsolutePath(this.sourceFileSubdirectory)
+            "2",
         )
-        bibliographyDataPaths.forEach( (bdPath) => args.push(... ["--bibliography", bdPath]) )
-        args.push( ... this.readPropertyList("resource-path").map(extractPath) );
-        args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
     }
-    if (configArgs.outputFormat === "beamer") {
-      args.push(... [
-        "--slide-level", configArgs["slideLevel"] || "2",
-      ])
-      // credit: git@github.com:alexeygumirov/pandoc-beamer-how-to.git
-      // Alexey Gumirov <ag_devops@die-optimisten.net>
-      args.push(... [
-        "-H", this.composeResourcePath(
-          "publication",
-          "pandoc",
-          "templates",
-          "beamer-preamble.tex"
-        ),
-        "--template", this.composeResourcePath(
-          "publication",
-          "pandoc",
-          "templates",
-          // "default_mod.latex",
-          "beamer.tex",
-        ),
-      ])
-    }
-    return args
-  }
 
-  execute(
-    commandPath: string,
-    configArgs: { [key:string]: string }
-  ) {
-    const commandArgs = this.composeArgs(configArgs)
-    const formattedCommand = commandPath + " " + commandArgs.join(" ")
-    const outputAbsolutePath = configArgs.outputAbsolutePath
-    const modal = new OutputModal(
-      app,
-      formattedCommand,
-      configArgs.outputSubpath,
-    );
-    modal.open();
-    try {
-      const process = spawn(commandPath, commandArgs, { cwd: this.vaultRootPath });
-      // const process = exec(commandPath + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
-      // const process = exec("ls" + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
-      // const process = exec("echo $PATH")
-      modal.setMessage("Starting production run")
-      modal.registerStartedProcess()
-      process.stdout?.on('data', (data) => {
-        // console.log(data)
-        modal.appendOutput(data);
-      });
-      process.stderr?.on('data', (data) => {
-        // console.log(data)
-        modal.appendError(data);
-      });
-      process.on('close', (code) => {
-        if (code === 0) {
-          modal.setMessage(`Document successfully produced: '${outputAbsolutePath}'`);
-        } else {
-          modal.setMessage(`Document production failed with code: ${code}`);
-        }
-        modal.registerClosedProcess()
-      });
-    } catch (err) {
-      modal.appendMessage(`Failed to produce document: ${err}`);
-      // setTimeout(() => modal.close(), 2000); // Close the modal after 2 seconds
+    onOpen() {
+        const { contentEl } = this;
+
+        contentEl.createEl("h3", { text: "Production Output" });
+
+        contentEl.createEl("h4", { text: "Output Format" });
+
+        const outputFormatContainer: HTMLElement = contentEl.createEl("div", {cls: "impresario-modal-input-container"})
+        const formatDropdown = outputFormatContainer.createEl('select', {cls: ["impresario-modal-input-element"]});
+        Object.entries(this.outputFormatMap).forEach(([formatName, formatExtension]) => {
+            const option = formatDropdown.createEl('option', { text: formatName, value: formatName });
+            if (formatName === this.defaultOutputFormat()) {
+                option.selected = true;
+            }
+        });
+
+        contentEl.createEl("h4", { text: "Output Directory" });
+        const outputDirectoryInputContainer: HTMLElement = contentEl.createEl("div", {cls: "impresario-modal-input-container"})
+        const outputDirectoryInput = outputDirectoryInputContainer.createEl('textarea', {
+            cls: ["impresario-modal-input-element"],
+        });
+        outputDirectoryInput.textContent = this.defaultOutputDirectory()
+        contentEl.createEl("h4", { text: "Output Path" });
+        const outputAnnotationContainer = contentEl.createEl('div', {
+            cls: ["impresario-modal-annotation"],
+        });
+        const updateAnnotation = () => {
+            this.outputSubpath = this.composeOutputSubpath(
+                formatDropdown.value || "",
+                outputDirectoryInput.value || "",  // Changed from textContent to value
+            )
+            this.outputAbsolutePath = this.composeAbsolutePath(this.outputSubpath)
+            outputAnnotationContainer.setText(this.outputAbsolutePath)
+        };
+        formatDropdown.addEventListener('change', updateAnnotation);
+        outputDirectoryInput.addEventListener('input', updateAnnotation);
+        updateAnnotation(); // Initial update
+
+        contentEl.createEl("h3", { text: "Production Parameters" });
+        contentEl.createEl("h4", { text: "Slide Level" });
+        const slideLevelContainer: HTMLElement = contentEl.createEl("div", {"cls": "impresario-modal-input-container"})
+        const slideLevelInput = slideLevelContainer.createEl('input', {
+            type: 'number',
+            cls: ["impresario-modal-input-element"]
+        });
+        slideLevelInput.value = this.defaultSlideLevel()
+        slideLevelInput.setAttribute('min', '0'); // Set 'min' attribute separately
+
+        contentEl.createEl("br")
+        contentEl.createEl("br")
+        const finalButtonsContainer = new Setting(contentEl)
+        let isVerbose = false;
+        finalButtonsContainer.controlEl.appendChild(document.createTextNode("Verbose"));
+        const verbosityToggle = finalButtonsContainer.addToggle( toggle => {
+            toggle.setValue(isVerbose)
+                .onChange(async (value) => {
+                    isVerbose = value;
+                })
+        })
+        finalButtonsContainer.addButton( (button: ButtonComponent) => {
+            button
+                .setButtonText("Produce!")
+                .onClick( () => {
+                    this.execute(
+                        "pandoc",
+                        {
+                            outputFormat: formatDropdown.value,
+                            outputSubpath: this.outputSubpath,
+                            outputAbsolutePath: this.outputAbsolutePath,
+                            slideLevel: slideLevelInput.value,
+                            verbosity: isVerbose ? "true" : "",
+                        },
+                    );
+                    this.close();
+                });
+        });
     }
-  }
+
+    composeResourcePath(...subpaths: string[]): string {
+        return path.join(
+            this.vaultRootPath,
+            ".obsidian",
+            "plugins",
+            "obsidian-impresario",
+            "resources",
+            // "publication",
+            ... subpaths,
+        )
+    }
+
+    composeArgs(
+        configArgs: { [key:string]: string }
+    ): string[] {
+        const outputAbsolutePath = configArgs.outputAbsolutePath
+        const fromElements = [
+            // "markdown_strict",
+            "markdown",
+            // "mediawiki_links",
+            "wikilinks_title_after_pipe",
+            "pipe_tables",
+            "backtick_code_blocks",
+            "auto_identifiers",
+            "strikeout",
+            "yaml_metadata_block",
+            "implicit_figures",
+            "smart",
+            "fenced_divs",
+            "citations",
+            "link_attributes",
+        ]
+        const args = [
+            "--from", fromElements.join("+"),
+            "--standalone",
+            "-t", configArgs.outputFormat,
+            "--resource-path", this.vaultRootPath,
+            this.sourceFileAbsolutePath,
+            "-o", outputAbsolutePath,
+        ];
+        if (true) {
+            args.push(... [
+                "--lua-filter", this.composeResourcePath(
+                    "publication",
+                    "pandoc",
+                    "filters",
+                    "pdcites.lua"
+                )]);
+        }
+        if (true) {
+            args.push(... [
+                "--lua-filter", this.composeResourcePath(
+                    "publication",
+                    "pandoc",
+                    "filters",
+                    "boxes.lua"
+                )]);
+        }
+        if (configArgs.isVerbose) {
+            args.push("--verbose");
+        }
+        const extractPath = (item: string) => item?.replace(/^\[\[/g, "").replace(/\]\]$/g,"");
+        if (true) {
+            args.push("--citeproc")
+            const bibliographyDataPaths: string[] = []
+            bibliographyDataPaths.push(
+                ... this.readPropertyList("bibliography")
+                    .map(extractPath)
+            // .map( (filePath: string) => path.join(this.vaultRootPath, filePath))
+            )
+            bibliographyDataPaths.forEach( (bdPath) => args.push(... ["--bibliography", bdPath]) )
+            args.push( ... this.readPropertyList("resource-path").map(extractPath) );
+            args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
+        }
+        if (configArgs.outputFormat === "beamer") {
+            args.push(... [
+                "--slide-level", configArgs["slideLevel"] || "2",
+            ])
+            // credit: git@github.com:alexeygumirov/pandoc-beamer-how-to.git
+            // Alexey Gumirov <ag_devops@die-optimisten.net>
+            args.push(... [
+                "-H", this.composeResourcePath(
+                    "publication",
+                    "pandoc",
+                    "templates",
+                    "beamer-preamble.tex"
+                ),
+                "--template", this.composeResourcePath(
+                    "publication",
+                    "pandoc",
+                    "templates",
+                    // "default_mod.latex",
+                    "beamer.tex",
+                ),
+            ])
+        }
+        return args
+    }
+
+    execute(
+        commandPath: string,
+        configArgs: { [key:string]: string }
+    ) {
+        const commandArgs = this.composeArgs(configArgs)
+        const formattedCommand = commandPath + " " + commandArgs.join(" ")
+        const outputAbsolutePath = configArgs.outputAbsolutePath
+        const modal = new OutputModal(
+            app,
+            formattedCommand,
+            configArgs.outputSubpath,
+        );
+        modal.open();
+        try {
+            const process = spawn(commandPath, commandArgs, { cwd: this.vaultRootPath });
+            // const process = exec(commandPath + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
+            // const process = exec("ls" + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
+            // const process = exec("echo $PATH")
+            modal.setMessage("Starting production run")
+            modal.registerStartedProcess()
+            process.stdout?.on('data', (data) => {
+                // console.log(data)
+                modal.appendOutput(data);
+            });
+            process.stderr?.on('data', (data) => {
+                // console.log(data)
+                modal.appendError(data);
+            });
+            process.on('close', (code) => {
+                if (code === 0) {
+                    modal.setMessage(`Document successfully produced: '${outputAbsolutePath}'`);
+                } else {
+                    modal.setMessage(`Document production failed with code: ${code}`);
+                }
+                modal.registerClosedProcess()
+            });
+        } catch (err) {
+            modal.appendMessage(`Failed to produce document: ${err}`);
+            // setTimeout(() => modal.close(), 2000); // Close the modal after 2 seconds
+        }
+    }
 }
 
 class Producer {
@@ -448,45 +460,45 @@ class Producer {
     private pluginResourcePath: string;
 
     constructor(
-    activeFile: TFile,
+        activeFile: TFile,
     ) {
-      this.activeFile = activeFile
+        this.activeFile = activeFile
         this.vaultRootPath = this.getVaultBasePath();
         this.pluginResourcePath = path.join(
-      this.vaultRootPath,
-      '.obsidian',
-      'plugins',
-      'obsidian-impresario',
-      'resources'
+            this.vaultRootPath,
+            '.obsidian',
+            'plugins',
+            'obsidian-impresario',
+            'resources'
         );
     }
 
-  getVaultBasePath(): string {
-    const adapter = app.vault.adapter;
-    if (adapter instanceof FileSystemAdapter) {
-      return adapter.getBasePath();
+    getVaultBasePath(): string {
+        const adapter = app.vault.adapter;
+        if (adapter instanceof FileSystemAdapter) {
+            return adapter.getBasePath();
+        }
+        return "";
     }
-    return "";
-  }
 
-  getProductionOutputFormat(): string {
+    getProductionOutputFormat(): string {
         const cache = app.metadataCache.getFileCache(this.activeFile);
         return cache && cache.frontmatter && cache.frontmatter['production-output-format']
-               ? cache.frontmatter['production-output-format']
-               : 'beamer'; // Default to 'beamer' if not specified
+            ? cache.frontmatter['production-output-format']
+            : 'beamer'; // Default to 'beamer' if not specified
     }
 
     produce() {
-    const outputFormat: string = this.getProductionOutputFormat();
+        const outputFormat: string = this.getProductionOutputFormat();
         const defaultSlideLevel = 2; // Default value
         const defaultOutputPath = 'path/to/default/output'; // Default value
-    if (!this.activeFile.path.endsWith(".md")) {
-      new Notice("Cannot produce active file: not in Markdown format")
-      return
+        if (!this.activeFile.path.endsWith(".md")) {
+            new Notice("Cannot produce active file: not in Markdown format")
+            return
+        }
+        const productionSetupModal = new ProductionSetupModal(app, this.activeFile)
+        productionSetupModal.open();
     }
-    const productionSetupModal = new ProductionSetupModal(app, this.activeFile)
-    productionSetupModal.open();
-  }
 
 
 }
@@ -498,15 +510,15 @@ class OutputModal extends Modal {
     outputEl: HTMLElement;
     errorEl: HTMLElement;
     copyCommandBtn: HTMLButtonElement;
-  copyDestinationBtn: HTMLButtonElement;
+    copyDestinationBtn: HTMLButtonElement;
     closeBtn: HTMLButtonElement;
     copyOutputBtn: HTMLButtonElement;
     openDestination: HTMLButtonElement;
 
     constructor(
-    app: App,
-    command: string,
-    outputSubpath: string,
+        app: App,
+        command: string,
+        outputSubpath: string,
     ) {
         super(app);
 
@@ -534,15 +546,15 @@ class OutputModal extends Modal {
 
         // Error Section
         this.contentEl.createEl('h3', { text: 'Pandoc' });
-    this.errorEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
+        this.errorEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
 
         // Result Section
         this.contentEl.createEl('h3', { text: 'Destination' });
         this.destinationEl = this.contentEl.createEl(
-      'div',
-      {cls: ["console-display-inner"]}
+            'div',
+            {cls: ["console-display-inner"]}
         );
-    this.destinationEl.style.height = "6rem";
+        this.destinationEl.style.height = "6rem";
         this.destinationEl.setText(outputSubpath);
         this.copyDestinationBtn = this.contentEl.createEl('button', { text: 'Copy Path' });
         this.copyDestinationBtn.onclick = () => this.copyToClipboard(outputSubpath);
@@ -557,7 +569,7 @@ class OutputModal extends Modal {
         this.openDestination = this.contentEl.createEl('button', { text: 'Open' });
         this.openDestination.setAttribute('disabled', 'true'); // Disable done button initially
         this.openDestination.onclick = () => {
-          this.app.workspace.openLinkText(outputSubpath, '', "split")
+            this.app.workspace.openLinkText(outputSubpath, '', "split")
         };
 
         // Close (Process continues running in background!)
@@ -576,7 +588,7 @@ class OutputModal extends Modal {
     // }
 
     setMessage(text: string) {
-    this.messageEl.empty()
+        this.messageEl.empty()
         const rowEl = this.messageEl.createEl('div', {cls: ["console-display-inner-row"]});
         rowEl.setText(text)
         // this.closeBtn.removeAttribute('disabled'); // Enable close button after appending message
@@ -612,14 +624,14 @@ class OutputModal extends Modal {
 
 
     registerStartedProcess() {
-      this.messageEl.classList.add("process-is-running")
-      this.messageEl.classList.remove("process-is-closed")
+        this.messageEl.classList.add("process-is-running")
+        this.messageEl.classList.remove("process-is-closed")
     }
 
     registerClosedProcess() {
-      this.messageEl.classList.remove("process-is-running")
-      this.messageEl.classList.add("process-is-closed")
-      this.openDestination.removeAttribute('disabled');
+        this.messageEl.classList.remove("process-is-running")
+        this.messageEl.classList.add("process-is-closed")
+        this.openDestination.removeAttribute('disabled');
     }
 
     private copyToClipboard(text: string) {
@@ -641,75 +653,75 @@ class OutputModal extends Modal {
 
 
 export default class Impresario extends Plugin {
-  settings: ImpresarioSettings;
+    settings: ImpresarioSettings;
 
 
-  produceActiveFile() {
-    if (!this.app.workspace) {
-      return;
+    produceActiveFile() {
+        if (!this.app.workspace) {
+            return;
+        }
+        const activeFile = this.app.workspace.getActiveFile();
+        if (!activeFile) {
+            new Notice('No active file found.');
+            return;
+        }
+        const producer = new Producer(activeFile)
+        producer.produce()
     }
-    const activeFile = this.app.workspace.getActiveFile();
-    if (!activeFile) {
-      new Notice('No active file found.');
-      return;
+
+    async onload() {
+        await this.loadSettings();
+
+        // this.addRibbonIcon("factory", "Produce!", () => {
+        // this.addRibbonIcon("blocks", "Produce!", () => {
+        this.addRibbonIcon("theater", "Produce!", () => {
+            this.produceActiveFile();
+        });
+        this.addCommand({
+            id: 'impresario-produce-document',
+            name: 'Produce the active file',
+            callback: this.produceActiveFile,
+        });
+        this.addSettingTab(new ImpresarioSettingTab(this.app, this));
     }
-    const producer = new Producer(activeFile)
-    producer.produce()
-  }
-
-  async onload() {
-    await this.loadSettings();
-
-    // this.addRibbonIcon("factory", "Produce!", () => {
-    // this.addRibbonIcon("blocks", "Produce!", () => {
-    this.addRibbonIcon("theater", "Produce!", () => {
-      this.produceActiveFile();
-    });
-    this.addCommand({
-      id: 'impresario-produce-document',
-      name: 'Produce the active file',
-      callback: this.produceActiveFile,
-    });
-    this.addSettingTab(new ImpresarioSettingTab(this.app, this));
-  }
 
 
-  onunload() {
+    onunload() {
     // clear existing leaves
     // disabled for development
     // this.app.workspace.detachLeavesOfType(VIEW_TYPE_APEXNAVIGATOR)
-  }
-
-  async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-  }
-
-  async saveSettings() {
-    await this.saveData(this.settings);
-  }
-
-  displayFrontmatter(file: TFile) {
-    const cache = this.app.metadataCache.getFileCache(file);
-    if (cache && cache.frontmatter) {
-      console.log("Frontmatter Metadata:", cache.frontmatter);
-    } else {
-      console.log("No frontmatter found in the file.");
     }
-  }
+
+    async loadSettings() {
+        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    }
+
+    async saveSettings() {
+        await this.saveData(this.settings);
+    }
+
+    displayFrontmatter(file: TFile) {
+        const cache = this.app.metadataCache.getFileCache(file);
+        if (cache && cache.frontmatter) {
+            console.log("Frontmatter Metadata:", cache.frontmatter);
+        } else {
+            console.log("No frontmatter found in the file.");
+        }
+    }
 
 }
 
 class ImpresarioSettingTab extends PluginSettingTab {
-  plugin: Impresario;
+    plugin: Impresario;
 
-  constructor(app: App, plugin: Impresario) {
-    super(app, plugin);
-    this.plugin = plugin;
-  }
+    constructor(app: App, plugin: Impresario) {
+        super(app, plugin);
+        this.plugin = plugin;
+    }
 
-  display(): void {
-    const {containerEl} = this;
-    containerEl.empty();
-  }
+    display(): void {
+        const {containerEl} = this;
+        containerEl.empty();
+    }
 }
 
