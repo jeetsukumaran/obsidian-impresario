@@ -34,6 +34,8 @@ end
 function Block(block)
     if block.t == "Para" then
         return pandoc.Para(Inlines(block.content))
+    elseif block.t == "OrderedList" then
+        return pandoc.OrderedList(Inlines(block.content))
     else
         return block
     end
