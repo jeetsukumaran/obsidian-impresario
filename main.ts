@@ -391,7 +391,8 @@ class ProductionSetupModal extends Modal {
           "publication",
           "pandoc",
           "templates",
-          "default_mod.latex",
+          // "default_mod.latex",
+          "beamer.tex",
         ),
       ])
     }
