@@ -438,7 +438,7 @@ class ProductionSetupModal extends Modal {
                 () => "",
             );
             if (customBibPath) {
-                bibliographyDataPaths.push(customBibPath);
+                bibliographyDataPaths.push(extractPath(customBibPath));
             }
             bibliographyDataPaths.push(
                 ... this.readPropertyList("bibliography")
