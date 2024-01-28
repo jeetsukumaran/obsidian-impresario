@@ -351,11 +351,11 @@ class ProductionSetupModal extends Modal {
     }
 
     resolveArgumentValue(
-        settingsName: string,
-        propertyName: string,
-        configKey: string,
         configArgs: { [key:string]: string },
-        defaultValueFn: () => "",
+        configKey: string,
+        propertyName: string,
+        settingsName: string,
+        defaultValueFn: () => string,
     ): string {
         let rval: string | null = null;
         rval = this.settings.configuration[settingsName] || rval;
@@ -390,6 +390,7 @@ class ProductionSetupModal extends Modal {
         const args = [
             "--from", fromElements.join("+"),
             "--standalone",
+            // "-t", configArgs.outputFormat,
             "-t", configArgs.outputFormat,
             "--resource-path", this.vaultRootPath,
             this.sourceFileAbsolutePath,
@@ -439,7 +440,13 @@ class ProductionSetupModal extends Modal {
             args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
         }
         args.push("--shift-heading-level-by");
-        args.push("-1");
+        args.push(this.resolveArgumentValue(
+            configArgs,
+            "shiftHeadingLevelBy",
+            "shift-heading-level-by",
+            "shiftHeadingLevelBy",
+            () => "0",
+        ));
         if (configArgs.outputFormat === "beamer") {
             args.push(... [
                 "--slide-level", configArgs["slideLevel"] || "2",
