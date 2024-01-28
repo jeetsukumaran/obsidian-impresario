@@ -26,13 +26,11 @@ import * as path from "path"
 // import { ImpresarioNavigatorView, VIEW_TYPE_APEXNAVIGATOR } from "./view";
 
 interface ImpresarioSettings {
-    artifactsLocation: string;
+    configuration: { [key: string]: string };
 }
 
 const DEFAULT_SETTINGS: ImpresarioSettings = {
-    // artifactsLocation: "artifacts";
-    // current directory
-    artifactsLocation: ".",
+    configuration: {},
 }
 
 let impresarioPropertyProductionParameterMap: {
@@ -133,17 +131,20 @@ class ProductionSetupModal extends Modal {
     argumentValueMap: { [key: string]: string | string[] }
     isAutoOpenOutput: boolean
     isAutoClose: boolean
+    settings: ImpresarioSettings
 
     constructor(
         app: App,
         sourceFile: TFile,
         isAutoOpenOutput: boolean,
         isAutoClose: boolean,
+        settings: ImpresarioSettings,
     ) {
         super(app);
         this.refreshSourceData(sourceFile);
         this.isAutoOpenOutput = isAutoOpenOutput;
         this.isAutoClose = isAutoClose;
+        this.settings = settings;
     }
 
     refreshSourceData(sourceFile: TFile) {
@@ -337,7 +338,6 @@ class ProductionSetupModal extends Modal {
             },
         );
     }
-
     composeResourcePath(...subpaths: string[]): string {
         return path.join(
             this.vaultRootPath,
@@ -348,6 +348,23 @@ class ProductionSetupModal extends Modal {
             // "publication",
             ... subpaths,
         )
+    }
+
+    resolveArgumentValue(
+        settingsName: string,
+        propertyName: string,
+        configKey: string,
+        configArgs: { [key:string]: string },
+        defaultValueFn: () => "",
+    ): string {
+        let rval: string | null = null;
+        rval = this.settings.configuration[settingsName] || rval;
+        rval = this.readPropertyString(propertyName, "") || rval;
+        rval = configArgs[configKey] || rval;
+        if (!rval && defaultValueFn) {
+            rval = defaultValueFn();
+        }
+        return rval || "";
     }
 
     composeArgs(
@@ -421,6 +438,8 @@ class ProductionSetupModal extends Modal {
             args.push( ... this.readPropertyList("resource-path").map(extractPath) );
             args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
         }
+        args.push("--shift-heading-level-by");
+        args.push("-1");
         if (configArgs.outputFormat === "beamer") {
             args.push(... [
                 "--slide-level", configArgs["slideLevel"] || "2",
@@ -495,9 +514,11 @@ class Producer {
     private activeFile: TFile;
     private vaultRootPath: string;
     private pluginResourcePath: string;
+    private settings: ImpresarioSettings;
 
     constructor(
         activeFile: TFile,
+        settings: ImpresarioSettings,
     ) {
         this.activeFile = activeFile
         this.vaultRootPath = this.getVaultBasePath();
@@ -508,6 +529,7 @@ class Producer {
             'obsidian-impresario',
             'resources'
         );
+        this.settings = settings;
     }
 
     getVaultBasePath(): string {
@@ -540,6 +562,7 @@ class Producer {
             this.activeFile,
             isAutoOpenOutput,
             isAutoClose,
+            this.settings,
         )
         if (isOpenSetupModal) {
             productionSetupModal.open();
@@ -732,7 +755,10 @@ export default class Impresario extends Plugin {
             new Notice('No active file found.');
             return;
         }
-        const producer = new Producer(activeFile);
+        const producer = new Producer(
+            activeFile,
+            this.settings,
+        );
         producer.produce(
             isOpenSetupModal,
             isAutoOpenOutput,
