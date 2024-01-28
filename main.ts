@@ -277,15 +277,15 @@ class ProductionSetupModal extends Modal {
         outputDirectoryInput.addEventListener('input', updateAnnotation);
         updateAnnotation(); // Initial update
 
-        contentEl.createEl("h3", { text: "Production Parameters" });
-        contentEl.createEl("h4", { text: "Slide Level" });
-        const slideLevelContainer: HTMLElement = contentEl.createEl("div", {"cls": "impresario-modal-input-container"})
-        const slideLevelInput = slideLevelContainer.createEl('input', {
-            type: 'number',
-            cls: ["impresario-modal-input-element"]
-        });
-        slideLevelInput.value = this.defaultSlideLevel()
-        slideLevelInput.setAttribute('min', '0'); // Set 'min' attribute separately
+        // contentEl.createEl("h3", { text: "Production Parameters" });
+        // contentEl.createEl("h4", { text: "Slide Level" });
+        // const slideLevelContainer: HTMLElement = contentEl.createEl("div", {"cls": "impresario-modal-input-container"})
+        // const slideLevelInput = slideLevelContainer.createEl('input', {
+        //     type: 'number',
+        //     cls: ["impresario-modal-input-element"]
+        // });
+        // slideLevelInput.value = this.defaultSlideLevel()
+        // slideLevelInput.setAttribute('min', '0'); // Set 'min' attribute separately
 
         contentEl.createEl("br")
         contentEl.createEl("br")
@@ -308,7 +308,7 @@ class ProductionSetupModal extends Modal {
                             outputFormat: formatDropdown.value,
                             outputSubpath: this.outputSubpath,
                             outputAbsolutePath: this.outputAbsolutePath,
-                            slideLevel: slideLevelInput.value,
+                            // slideLevel: slideLevelInput.value,
                             verbosity: isVerbose ? "true" : "",
                         },
                     );
@@ -322,7 +322,7 @@ class ProductionSetupModal extends Modal {
     ) {
         let outputFormat = this.defaultOutputFormat();
         let outputDirectory = this.defaultOutputDirectory();
-        let slideLevel = this.defaultSlideLevel();
+        // let slideLevel = this.defaultSlideLevel();
         this.outputSubpath = this.composeOutputSubpath(
             outputFormat || "",
             outputDirectory || "",  // Changed from textContent to value
@@ -333,7 +333,7 @@ class ProductionSetupModal extends Modal {
                 outputFormat: outputFormat,
                 outputSubpath: this.outputSubpath,
                 outputAbsolutePath: this.composeAbsolutePath(this.outputSubpath),
-                slideLevel: this.defaultSlideLevel(),
+                // slideLevel: this.defaultSlideLevel(),
                 verbosity: isVerbose ? "true" : "",
             },
         );
@@ -458,8 +458,16 @@ class ProductionSetupModal extends Modal {
             () => "0",
         ));
         if (configArgs.outputFormat === "beamer") {
+            let slideLevel = this.resolveArgumentValue(
+                configArgs,
+                "defaultSlideLevel",
+                "slide-level",
+                "slideLevel",
+                () => "2",
+            );
             args.push(... [
-                "--slide-level", configArgs["slideLevel"] || "2",
+                "--slide-level",
+                slideLevel,
             ])
             // credit: git@github.com:alexeygumirov/pandoc-beamer-how-to.git
             // Alexey Gumirov <ag_devops@die-optimisten.net>
