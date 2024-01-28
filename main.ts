@@ -430,6 +430,16 @@ class ProductionSetupModal extends Modal {
         if (true) {
             args.push("--citeproc")
             const bibliographyDataPaths: string[] = []
+            let customBibPath = this.resolveArgumentValue(
+                configArgs,
+                "defaultBibliographyPath",
+                "bibliographic-database-path",
+                "bibliographyPath",
+                () => "",
+            );
+            if (customBibPath) {
+                bibliographyDataPaths.push(customBibPath);
+            }
             bibliographyDataPaths.push(
                 ... this.readPropertyList("bibliography")
                     .map(extractPath)
