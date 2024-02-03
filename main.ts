@@ -220,7 +220,8 @@ class ProductionSetupModal extends Modal {
 
     defaultOutputFormat(): string {
         // return this.readDefaultString("production-output-format", "beamer")
-        return this.readPropertyString("production-output-format", "pdf")
+        let outputFormatPropertyName = this.resolveArgumentValue({}, "", "", "outputFormatPropertyName", () => "output-format")
+        return this.readPropertyString(outputFormatPropertyName, "pdf")
     }
 
     defaultOutputDirectory(): string {
@@ -565,16 +566,16 @@ class Producer {
         return "";
     }
 
-    getProductionOutputFormat(): string {
-        const cache = app.metadataCache.getFileCache(this.activeFile);
-        return cache
-            && cache.frontmatter
-            && (
-                cache.frontmatter['production-output-format']
-                || cache.frontmatter["output-format"]
-                || "pdf"
-            )
-    }
+    // getProductionOutputFormat(): string {
+    //     const cache = app.metadataCache.getFileCache(this.activeFile);
+    //     return cache
+    //         && cache.frontmatter
+    //         && (
+    //             cache.frontmatter['production-output-format']
+    //             || cache.frontmatter["output-format"]
+    //             || "pdf"
+    //         )
+    // }
 
     produce(
         isOpenSetupModal: boolean,
