@@ -567,9 +567,13 @@ class Producer {
 
     getProductionOutputFormat(): string {
         const cache = app.metadataCache.getFileCache(this.activeFile);
-        return cache && cache.frontmatter && cache.frontmatter['production-output-format']
-            ? cache.frontmatter['production-output-format']
-            : 'beamer'; // Default to 'beamer' if not specified
+        return cache
+            && cache.frontmatter
+            && (
+                cache.frontmatter['production-output-format']
+                || cache.frontmatter["output-format"]
+                || "pdf"
+            )
     }
 
     produce(
