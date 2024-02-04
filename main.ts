@@ -404,13 +404,6 @@ class ProductionSetupModal extends Modal {
                     "publication",
                     "pandoc",
                     "filters",
-                    "callouts.lua"
-                )]);
-            args.push(... [
-                "--lua-filter", this.composeResourcePath(
-                    "publication",
-                    "pandoc",
-                    "filters",
                     "colophon.lua"
                 )]);
             args.push(... [
@@ -418,16 +411,7 @@ class ProductionSetupModal extends Modal {
                     "publication",
                     "pandoc",
                     "filters",
-                    "pdcites.lua"
-                )]);
-        }
-        if (true) {
-            args.push(... [
-                "--lua-filter", this.composeResourcePath(
-                    "publication",
-                    "pandoc",
-                    "filters",
-                    "boxes.lua"
+                    "citationlinks.lua"
                 )]);
         }
         // if (false) {
@@ -464,6 +448,23 @@ class ProductionSetupModal extends Modal {
             bibliographyDataPaths.forEach( (bdPath) => args.push(... ["--bibliography", bdPath]) )
             args.push( ... this.readPropertyList("resource-path").map(extractPath) );
             args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
+        }
+        if (true) {
+            // come after citations are processed
+            args.push(... [
+                "--lua-filter", this.composeResourcePath(
+                    "publication",
+                    "pandoc",
+                    "filters",
+                    "callouts.lua"
+                )]);
+            args.push(... [
+                "--lua-filter", this.composeResourcePath(
+                    "publication",
+                    "pandoc",
+                    "filters",
+                    "boxes.lua"
+                )]);
         }
         args.push("--shift-heading-level-by");
         args.push(this.resolveArgumentValue(

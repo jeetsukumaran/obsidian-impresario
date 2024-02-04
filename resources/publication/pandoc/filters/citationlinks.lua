@@ -41,10 +41,21 @@ function Block(block)
     end
 end
 
+function BlockQuote (block)
+    if block.t == "Para" then
+        return pandoc.Para(Inlines(block.content))
+    elseif block.t == "OrderedList" then
+        return pandoc.OrderedList(Inlines(block.content))
+    else
+        return block
+    end
+end
+
 return {
     {
 		Inlines = Inlines,
 		Block = Block,
+		BlockQuote = BlockQuote,
     }
 }
 
