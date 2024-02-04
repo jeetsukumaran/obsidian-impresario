@@ -30,7 +30,8 @@ interface ImpresarioSettings {
 }
 
 const DEFAULT_SETTINGS: ImpresarioSettings = {
-    configuration: {},
+    configuration: {
+    },
 }
 
 let impresarioPropertyProductionParameterMap: {
@@ -398,6 +399,20 @@ class ProductionSetupModal extends Modal {
             "-o", outputAbsolutePath,
         ];
         if (true) {
+            args.push(... [
+                "--lua-filter", this.composeResourcePath(
+                    "publication",
+                    "pandoc",
+                    "filters",
+                    "callouts.lua"
+                )]);
+            args.push(... [
+                "--lua-filter", this.composeResourcePath(
+                    "publication",
+                    "pandoc",
+                    "filters",
+                    "colophon.lua"
+                )]);
             args.push(... [
                 "--lua-filter", this.composeResourcePath(
                     "publication",
