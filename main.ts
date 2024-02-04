@@ -473,6 +473,15 @@ class ProductionSetupModal extends Modal {
             "shiftHeadingLevelBy",
             () => "0",
         ));
+        if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
+            args.push( ... [
+            "-H", this.composeResourcePath(
+                "publication",
+                "pandoc",
+                "templates",
+                "packages.latex",
+            )]);
+        }
         if (configArgs.outputFormat === "beamer") {
             let slideLevel = this.resolveArgumentValue(
                 configArgs,
@@ -499,7 +508,7 @@ class ProductionSetupModal extends Modal {
                     "pandoc",
                     "templates",
                     // "default_mod.latex",
-                    "beamer.tex",
+                    "beamer-template.tex",
                 ),
             ])
         }
