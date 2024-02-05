@@ -449,6 +449,14 @@ class ProductionSetupModal extends Modal {
             args.push( ... this.readPropertyList("resource-path").map(extractPath) );
             args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
         }
+        args.push("--shift-heading-level-by");
+        args.push(this.resolveArgumentValue(
+            configArgs,
+            "shiftHeadingLevelBy",
+            "shift-heading-level-by",
+            "shiftHeadingLevelBy",
+            () => "0",
+        ));
         if (true) {
             // come after citations are processed
             args.push(... [
@@ -466,14 +474,6 @@ class ProductionSetupModal extends Modal {
                     "boxes.lua"
                 )]);
         }
-        args.push("--shift-heading-level-by");
-        args.push(this.resolveArgumentValue(
-            configArgs,
-            "shiftHeadingLevelBy",
-            "shift-heading-level-by",
-            "shiftHeadingLevelBy",
-            () => "0",
-        ));
         if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
             args.push( ... [
             "-H", this.composeResourcePath(
