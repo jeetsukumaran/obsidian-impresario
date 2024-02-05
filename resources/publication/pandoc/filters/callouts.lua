@@ -25,51 +25,6 @@ function extractCalloutContent(block)
     return callout_type, callout_title, remaining_content
 end
 
--- function extractCalloutContent(block)
---     -- Attempt to find the callout type and title within the first paragraph's inlines
---     local first_para = block.content[1]
---     if not first_para then return nil end -- Early return if no content
-
---     local callout_type, callout_title
---     local content_start_index = nil
-
---     for i, el in ipairs(first_para.content) do
---         if el.t == "Str" then
---             local type_match, title_match = el.text:match("%[!(%w+)%]%s*(.*)")
---             if type_match then
---                 callout_type = type_match
---                 -- Remaining text in the matched element might be part of the title
---                 if title_match ~= "" then
---                     callout_title = title_match
---                     content_start_index = i
---                 else
---                     -- Title might be in the next element if this one only contains the type
---                     if first_para.content[i + 1] and first_para.content[i + 1].t == "Str" then
---                         callout_title = first_para.content[i + 1].text
---                         content_start_index = i + 1
---                     end
---                 end
---                 break -- Stop loop after finding the callout type
---             end
---         end
---     end
-
---     -- If callout type is found, prepare the content excluding the title part
---     if not callout_type then return nil end -- Not a callout if no type was found
-
---     -- Remove the title from the first paragraph's content
---     if content_start_index then
---         table.remove(first_para.content, content_start_index)
---         if #first_para.content == 0 then
---             -- Remove the first paragraph if it's empty after removing the title
---             table.remove(block.content, 1)
---         end
---     end
-
---     return callout_type, callout_title, block.content
--- end
-
-
 
 function renderCallout(callout_type, callout_title, body_blocks, format)
     local formattedBody = pandoc.write(pandoc.Pandoc(body_blocks, pandoc.Meta({})), format)
