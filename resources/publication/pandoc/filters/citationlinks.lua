@@ -46,6 +46,8 @@ function BlockQuote (block)
         return pandoc.Para(Inlines(block.content))
     elseif block.t == "OrderedList" then
         return pandoc.OrderedList(Inlines(block.content))
+    elseif block.t == "BulletList" then
+        return pandoc.BulletList(Inlines(block.content))
     else
         return block
     end
