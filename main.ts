@@ -458,6 +458,17 @@ class ProductionSetupModal extends Modal {
             () => "0",
         ));
         if (true) {
+            // https://github.com/raghur/mermaid-filter
+            // npm i -g mermaid-filter
+            // Note that pandoc-crossref will automatically find and use the
+            // caption= option. Also note that the order of applying the
+            // filters matters - you must apply mermaid-filter before
+            // pandoc-crossref so that pandoc-crossref can find the images.)
+            args.push(... [
+                "--filter", "mermaid-filter",
+            ])
+        }
+        if (true) {
             // come after citations are processed
             args.push(... [
                 "--lua-filter", this.composeResourcePath(
@@ -474,15 +485,15 @@ class ProductionSetupModal extends Modal {
                     "boxes.lua"
                 )]);
         }
-        // if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
-        //     args.push( ... [
-        //     "-H", this.composeResourcePath(
-        //         "publication",
-        //         "pandoc",
-        //         "templates",
-        //         "packages.latex",
-        //     )]);
-        // }
+        if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
+            args.push( ... [
+            "-H", this.composeResourcePath(
+                "publication",
+                "pandoc",
+                "templates",
+                "packages.latex",
+            )]);
+        }
         // if (configArgs.outputFormat === "pdf") {
         //     args.push(... [
         //         "--template", this.composeResourcePath(
