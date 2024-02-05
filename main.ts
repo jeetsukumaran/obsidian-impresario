@@ -474,15 +474,26 @@ class ProductionSetupModal extends Modal {
                     "boxes.lua"
                 )]);
         }
-        if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
-            args.push( ... [
-            "-H", this.composeResourcePath(
-                "publication",
-                "pandoc",
-                "templates",
-                "packages.latex",
-            )]);
-        }
+        // if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
+        //     args.push( ... [
+        //     "-H", this.composeResourcePath(
+        //         "publication",
+        //         "pandoc",
+        //         "templates",
+        //         "packages.latex",
+        //     )]);
+        // }
+        // if (configArgs.outputFormat === "pdf") {
+        //     args.push(... [
+        //         "--template", this.composeResourcePath(
+        //             "publication",
+        //             "pandoc",
+        //             "templates",
+        //             // "default_mod.latex",
+        //             "pdfdefault.tex",
+        //         ),
+        //     ])
+        // }
         if (configArgs.outputFormat === "beamer") {
             let slideLevel = this.resolveArgumentValue(
                 configArgs,
