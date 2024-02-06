@@ -9,11 +9,11 @@ end
 -- This function processes each Pandoc document
 function Pandoc(doc)
   -- Read the heading value from document metadata, using kebab-case. Use default if not specified.
-  local ignore_after_heading = pandoc.utils.stringify(doc.meta['ignore-after-heading'] or "# Colophon")
+  local ignore_after_heading = pandoc.utils.stringify(doc.meta['ignore-after-heading'] or "Colophon")
 
   -- If the heading is to use default and not specified, adjust it for comparison
   if ignore_after_heading == "" then
-    ignore_after_heading = "# Colophon"
+    ignore_after_heading = "Colophon"
   end
 
   -- Normalize the heading to remove potential leading '#' used in markdown
