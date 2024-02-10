@@ -20,8 +20,9 @@ import {
     TAbstractFile,
 } from 'obsidian';
 // import * as child_process from 'child_process'
-import { spawn, exec } from "child_process"
-import * as path from "path"
+import { spawn, exec } from "child_process";
+import * as path from "path";
+import * as os from 'os';
 
 // Custom View
 // https://docs.obsidian.md/Plugins/User+interface/Views
@@ -575,7 +576,12 @@ class ProductionSetupModal extends Modal {
         try {
             ensureParentDirectoryExists(this.app, this.outputSubpath)
                 .then( () => {
-                    const process = spawn(commandPath, commandArgs, { cwd: this.vaultRootPath });
+                    const process = spawn(
+                        commandPath,
+                        commandArgs,
+                        // { cwd: this.vaultRootPath },
+                        { cwd: os.tmpdir() },
+                    );
                     // const process = exec(commandPath + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
                     // const process = exec("ls" + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
                     // const process = exec("echo $PATH")
