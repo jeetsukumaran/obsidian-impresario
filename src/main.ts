@@ -221,16 +221,32 @@ class ProductionSetupModal extends Modal {
 
     defaultOutputFormat(): string {
         // return this.readDefaultString("production-output-format", "beamer")
-        let outputFormatPropertyName = this.resolveArgumentValue({}, "", "", "outputFormatPropertyName", () => "output-format")
+        let outputFormatPropertyName = this.resolveArgumentValue(
+            {},
+            "",
+            "",
+            "outputFormatPropertyName",
+            () => "output-format"
+        )
         return this.readPropertyString(outputFormatPropertyName, "pdf")
     }
 
     defaultOutputDirectory(): string {
-        return this.readPropertyString(
-            "production-output-directory",
-            // this.composeAbsolutePath(this.sourceFileSubdirectory)
-            this.sourceFileSubdirectory,
+        let rval = this.resolveArgumentValue(
+            {},
+            "output-directory",
+            "defaultOutputDirectory",
+            "defaultOutputDirectoryPropertyName",
+            () => "/artifacts",
         )
+        return rval;
+        // return this.resolveArgumentValue(
+        //     configArgs,
+        //     "defaultBibliographyPath",
+        //     "bibliographic-database-path",
+        //     "bibliographyPath",
+        //     () => "",
+        // );
     }
 
     defaultSlideLevel(): string {
