@@ -404,7 +404,7 @@ class ProductionSetupModal extends Modal {
                     "publication",
                     "pandoc",
                     "filters",
-                    "colophon.lua"
+                    "scratch.lua"
                 )]);
             args.push(... [
                 "--lua-filter", this.composeResourcePath(
