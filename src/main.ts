@@ -16,6 +16,8 @@ import {
     WorkspaceLeaf,
     CachedMetadata,
     TFile,
+    TFolder,
+    TAbstractFile,
 } from 'obsidian';
 // import * as child_process from 'child_process'
 import { spawn, exec } from "child_process"
@@ -237,7 +239,7 @@ class ProductionSetupModal extends Modal {
             "output-directory",
             "defaultOutputDirectory",
             "defaultOutputDirectoryPropertyName",
-            () => "/artifacts",
+            () => "/",
         )
         return rval;
         // return this.resolveArgumentValue(
@@ -320,6 +322,7 @@ class ProductionSetupModal extends Modal {
             button
                 .setButtonText("Produce!")
                 .onClick( () => {
+                    // ensureDirectoryExists(this.app, this.outputAbsolutePath);
                     this.execute(
                         "pandoc",
                         {
@@ -928,3 +931,43 @@ class ImpresarioSettingTab extends PluginSettingTab {
     }
 }
 
+async function ensureDirectoryExists(app: App, dirPath: string): Promise<void> {
+    // Check if the parent directory exists
+
+    let dirNode = app.vault.getAbstractFileByPath(dirPath) as TFolder;
+    if (!dirNode) {
+        // Create the parent directory if it doesn't exist
+        await app.vault.createFolder(dirPath);
+    }
+}
+
+export async function ensureParentDirectoryExists(app: App, filePath: string): Promise<void> {
+    const parentDirPath = filePath.substring(0, filePath.lastIndexOf('/'));
+
+    // Check if the parent directory exists
+    let parentDir = app.vault.getAbstractFileByPath(parentDirPath) as TFolder;
+
+    if (!parentDir) {
+        // Create the parent directory if it doesn't exist
+        await createDirectory(app, parentDirPath);
+    }
+}
+
+export async function createDirectory(app: App, dirPath: string): Promise<TFolder> {
+    const pathParts = dirPath.split('/').filter(part => part.length);
+
+    let currentPath = '';
+    let currentDir: TAbstractFile | null = null;
+
+    for (const part of pathParts) {
+        currentPath += '/' + part;
+        currentDir = app.vault.getAbstractFileByPath(currentPath);
+
+        if (!currentDir) {
+            // Create the directory if it doesn't exist
+            currentDir = await app.vault.createFolder(currentPath);
+        }
+    }
+
+    return currentDir as TFolder;
+}
