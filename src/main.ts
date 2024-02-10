@@ -239,7 +239,7 @@ class ProductionSetupModal extends Modal {
             "output-directory",
             "defaultOutputDirectory",
             "defaultOutputDirectoryPropertyName",
-            () => "/",
+            () => "artifacts",
         )
         return rval;
         // return this.resolveArgumentValue(
@@ -573,28 +573,32 @@ class ProductionSetupModal extends Modal {
         );
         modal.open();
         try {
-            const process = spawn(commandPath, commandArgs, { cwd: this.vaultRootPath });
-            // const process = exec(commandPath + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
-            // const process = exec("ls" + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
-            // const process = exec("echo $PATH")
-            modal.setMessage("Starting production run")
-            modal.registerStartedProcess()
-            process.stdout?.on('data', (data) => {
-                // console.log(data)
-                modal.appendOutput(data);
-            });
-            process.stderr?.on('data', (data) => {
-                // console.log(data)
-                modal.appendError(data);
-            });
-            process.on('close', (code) => {
-                if (code === 0) {
-                    modal.setMessage(`Document successfully produced: '${outputAbsolutePath}'`);
-                } else {
-                    modal.setMessage(`Document production failed with code: ${code}`);
-                }
-                modal.registerClosedProcess()
-            });
+            ensureParentDirectoryExists(this.app, this.outputSubpath)
+                .then( () => {
+                    const process = spawn(commandPath, commandArgs, { cwd: this.vaultRootPath });
+                    // const process = exec(commandPath + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
+                    // const process = exec("ls" + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
+                    // const process = exec("echo $PATH")
+                    modal.setMessage("Starting production run")
+                    modal.registerStartedProcess()
+                    process.stdout?.on('data', (data) => {
+                        // console.log(data)
+                        modal.appendOutput(data);
+                    });
+                    process.stderr?.on('data', (data) => {
+                        // console.log(data)
+                        modal.appendError(data);
+                    });
+                    process.on('close', (code) => {
+                        if (code === 0) {
+                            modal.setMessage(`Document successfully produced: '${outputAbsolutePath}'`);
+                        } else {
+                            modal.setMessage(`Document production failed with code: ${code}`);
+                        }
+                        modal.registerClosedProcess()
+                    });
+                })
+                .catch();
         } catch (err) {
             modal.appendMessage(`Failed to produce document: ${err}`);
             // setTimeout(() => modal.close(), 2000); // Close the modal after 2 seconds
