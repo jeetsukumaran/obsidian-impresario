@@ -433,6 +433,13 @@ class ProductionSetupModal extends Modal {
                     "filters",
                     "citationlinks.lua"
                 )]);
+            args.push(... [
+                "--lua-filter", this.composeResourcePath(
+                    "publication",
+                    "pandoc",
+                    "filters",
+                    "tikzblock.lua"
+                )]);
         }
         // if (false) {
         //     args.push(... [
