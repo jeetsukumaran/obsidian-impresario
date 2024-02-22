@@ -3,7 +3,7 @@
 \usepackage{tikz}
 
 \usepackage{fontawesome}
-% \usepackage{tocloft}
+% \usepackage{tocloft} % breaks beamer at least
 \usepackage{graphicx}
 
 \usepackage{hyperref}
