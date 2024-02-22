@@ -1,6 +1,28 @@
-\usetheme{metropolis}
-\useoutertheme[left,height=0pt,width=0.12\paperwidth]{sidebar}
-\definecolor{sidebarGradientTop}{HTML}{776666}
-\definecolor{sidebarGradientBottom}{HTML}{665555}
+\usetheme{metropolis} % Using the Metropolis theme as the base
+
+% Adjusting the sidebar dimensions and content
+\useoutertheme[left,height=0pt,width=0.1\paperwidth]{sidebar} % Slightly narrower sidebar for balance
+
+% Defining a refined color palette
+\definecolor{primaryFg}{HTML}{203038}
+\definecolor{primaryBg}{HTML}{d8d1cc}
+\definecolor{accentFg}{HTML}{203038}
+\definecolor{accentBg}{HTML}{d8d1cc}
+\definecolor{titleboxfgcolor}{HTML}{EDEDED}
+\definecolor{sidebarGradientTop}{HTML}{777777}
+\definecolor{sidebarGradientBottom}{HTML}{666666}
+
+% Setting beamercolors for various elements
+\setbeamercolor{structure}{fg=primaryFg,bg=primaryBg}
+\setbeamercolor{background canvas}{fg=primaryFg,bg=primaryBg}
+\setbeamercolor{frametitle}{fg=accentFg, bg=accentBg}
+\setbeamercolor{title box}{fg=accentFg, bg=accentBg}
+\setbeamercolor{subtitle box}{fg=accentFg, bg=accentBg}
+
+% Refining the sidebar gradient for better readability and aesthetic appeal
 \setbeamertemplate{sidebar canvas left}[vertical shading][top=sidebarGradientTop,bottom=sidebarGradientBottom]
+
+% Optional: Additional typography adjustments for enhanced readability
+\setbeamerfont{frametitle}{size=\Large, series=\bfseries}
+\setbeamerfont{title}{size=\LARGE, series=\bfseries}
 
