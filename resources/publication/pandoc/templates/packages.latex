@@ -1,12 +1,15 @@
 \usepackage{xcolor}
 \usepackage{tcolorbox}
 \usepackage{tikz}
+
 \usepackage{fontawesome}
-\usepackage{tocloft}
+% \usepackage{tocloft}
 \usepackage{graphicx}
+
 \usepackage{hyperref}
 \usepackage{float}
 \usepackage{glossaries}
+
 \usepackage{xparse}
 \usepackage{lscape}
 \usepackage{geometry}
