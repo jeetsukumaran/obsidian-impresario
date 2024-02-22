@@ -476,14 +476,14 @@ class ProductionSetupModal extends Modal {
             args.push( ... this.readPropertyList("resource-path").map(extractPath) );
             args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
         }
-        args.push("--shift-heading-level-by");
-        args.push(this.resolveArgumentValue(
-            configArgs,
-            "shiftHeadingLevelBy",
-            "shift-heading-level-by",
-            "shiftHeadingLevelBy",
-            () => "0",
-        ));
+        // args.push("--shift-heading-level-by");
+        // args.push(this.resolveArgumentValue(
+        //     configArgs,
+        //     "shiftHeadingLevelBy",
+        //     "shift-heading-level-by",
+        //     "shiftHeadingLevelBy",
+        //     () => "0",
+        // ));
         if (true) {
             // https://github.com/raghur/mermaid-filter
             // npm i -g mermaid-filter
@@ -553,13 +553,13 @@ class ProductionSetupModal extends Modal {
                     "templates",
                     "beamer-preamble.tex"
                 ),
-                "--template", this.composeResourcePath(
-                    "publication",
-                    "pandoc",
-                    "templates",
-                    // "default_mod.latex",
-                    "beamer-template.tex",
-                ),
+                // "--template", this.composeResourcePath(
+                //     "publication",
+                //     "pandoc",
+                //     "templates",
+                //     // "default_mod.latex",
+                //     "beamer-template.tex",
+                // ),
             ])
         }
         return args
