@@ -13,3 +13,6 @@
 \usepackage{xparse}
 \usepackage{lscape}
 \usepackage{geometry}
+
+\usepackage{booktabs}
+\usepackage{makecell}
