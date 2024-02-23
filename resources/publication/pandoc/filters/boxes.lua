@@ -16,7 +16,8 @@ function Div(element)
         -- get latex environment name from class name
         div = element.classes[1]:gsub("-", " ")
         div = div:gsub("(%l)(%w*)", function(a, b) return string.upper(a)..b end)
-        div = "Div"..div:gsub(" ", "")
+        -- div = "Div"..div:gsub(" ", "")
+        div = div:gsub(" ", "")
 
         -- insert element in front
         table.insert(
