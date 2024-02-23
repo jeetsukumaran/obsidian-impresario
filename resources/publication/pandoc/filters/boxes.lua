@@ -1,6 +1,5 @@
 function Div(element)
 -- function based on https://tex.stackexchange.com/a/526036
-
     if
         element.classes[1] == "note"
         or element.classes[1] == "side-note"
@@ -32,3 +31,7 @@ function Div(element)
     end
     return element
 end
+
+return {
+    {Div = Div}
+}
