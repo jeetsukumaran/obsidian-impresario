@@ -424,13 +424,6 @@ class ProductionSetupModal extends Modal {
                     "publication",
                     "pandoc",
                     "filters",
-                    "imageAttrs.lua"
-                )]);
-            args.push(... [
-                "--lua-filter", this.composeResourcePath(
-                    "publication",
-                    "pandoc",
-                    "filters",
                     "scratch.lua"
                 )]);
             args.push(... [
