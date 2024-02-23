@@ -106,28 +106,36 @@ function Image(elem)
         elem.caption = {}
     end
 
-    if FORMAT == "latex" or FORMAT == "pdf" or FORMAT == "beamer" then
-        -- Dynamically get the first resource path or use a default if not set
-        local rootPath = PANDOC_STATE.resource_path[1] or "."
-        local absSrcPath = rootPath .. "/" .. elem.src
-        local latexString = "\\begin{figure}[htbp]\n\\centering\n"
-        if elem.attributes.width then
-            -- Convert width attribute to LaTeX compatible format if specified
-            latexString = latexString .. "\\includegraphics[width=" .. elem.attributes.width .. "]"
-        else
-            latexString = latexString .. "\\includegraphics"
-        end
-        latexString = latexString .. "{" .. absSrcPath .. "}\n"
-        -- latexString = latexString .. "\\caption{" .. pandoc.utils.stringify(elem.caption) .. "}\n"
-        -- latexString = latexString .. "\\end{figure}"
-        latexString = latexString .. "\\caption{" .. pandoc.utils.stringify(elem.caption) .. "}\n"
-        latexString = latexString .. "\\end{figure}"
+    -- if FORMAT == "latex" or FORMAT == "pdf" or FORMAT == "beamer" then
+    --     -- Dynamically get the first resource path or use a default if not set
+    --     local rootPath = PANDOC_STATE.resource_path[1] or "."
+    --     local absSrcPath = rootPath .. "/" .. elem.src
+    --     local latexString = "\\begin{figure}[htbp]\n\\centering\n"
+    --     if elem.attributes.width then
+    --         -- Convert width attribute to LaTeX compatible format if specified
+    --         latexString = latexString .. "\\includegraphics[width=" .. elem.attributes.width .. "]"
+    --     else
+    --         latexString = latexString .. "\\includegraphics"
+    --     end
+    --     latexString = latexString .. "{" .. absSrcPath .. "}\n"
+    --     -- latexString = latexString .. "\\caption{" .. pandoc.utils.stringify(elem.caption) .. "}\n"
+    --     -- latexString = latexString .. "\\end{figure}"
+    --     latexString = latexString .. "\\caption{" .. pandoc.utils.stringify(elem.caption) .. "}\n"
+    --     latexString = latexString .. "\\end{figure}"
 
-        -- Return the raw LaTeX block
-        -- return pandoc.RawBlock('latex', latexString)
-        return pandoc.RawInline('latex', latexString)
-    else
-        return elem
-    end
+    --     -- Return the raw LaTeX block
+    --     -- return pandoc.RawBlock('latex', latexString)
+    --     return pandoc.RawInline('latex', latexString)
+    -- else
+    --     return elem
+    -- end
+
+    return elem
 end
 
+return {
+    {
+        Image = Image
+        -- Figure = Figure
+    }
+}
