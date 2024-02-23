@@ -10,11 +10,21 @@ function Div(element)
         or element.classes[1] == "center"
         or element.classes[1] == "highlight"
         or element.classes[1] == "tiny"
+        or element.classes[1] == "scriptsize"
+        or element.classes[1] == "footnotesize"
+        or element.classes[1] == "small"
+        or element.classes[1] == "normalsize"
+        or element.classes[1] == "large"
+        or element.classes[1] == "Large"
+        or element.classes[1] == "LARGE"
+        or element.classes[1] == "huge"
+        or element.classes[1] == "Huge"
     then
 
         -- get latex environment name from class name
-        div = element.classes[1]:gsub("-", " ")
-        div = div:gsub("(%l)(%w*)", function(a, b) return string.upper(a)..b end)
+        div = element.classes[1]
+        -- div = element.classes[1]:gsub("-", " ")
+        -- div = div:gsub("(%l)(%w*)", function(a, b) return string.upper(a)..b end)
         -- div = "Div"..div:gsub(" ", "")
         div = div:gsub(" ", "")
 
