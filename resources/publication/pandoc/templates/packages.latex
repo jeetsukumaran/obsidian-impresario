@@ -1,6 +1,7 @@
 \usepackage{xcolor}
 \usepackage{tcolorbox}
 \usepackage{tikz}
+\usepackage{tikz-cd}
 
 \usepackage{fontawesome}
 % \usepackage{tocloft} % breaks beamer at least
@@ -16,3 +17,4 @@
 
 \usepackage{booktabs}
 \usepackage{makecell}
+
