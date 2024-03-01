@@ -14,6 +14,10 @@ function CodeBlock(block)
     -- Remove everything from the \end{document} pattern to the end of the block
     tikzCode = tikzCode:gsub(".*" .. endDocPattern, "", 1)
 
+    print("---")
+    print(tikzCode)
+    print(block.text)
+    print("---")
     -- Construct the LaTeX code for the tikzpicture environment
     local latex = '\\begin{tikzpicture}[domain=0:4]\n' ..
                   tikzCode ..
