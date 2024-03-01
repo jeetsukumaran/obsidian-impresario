@@ -483,14 +483,29 @@ class ProductionSetupModal extends Modal {
             args.push( ... this.readPropertyList("resource-path").map(extractPath) );
             args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
         }
-        // args.push("--shift-heading-level-by");
-        // args.push(this.resolveArgumentValue(
-        //     configArgs,
-        //     "shiftHeadingLevelBy",
-        //     "shift-heading-level-by",
-        //     "shiftHeadingLevelBy",
-        //     () => "0",
-        // ));
+        const includeInHeader: string[] = this.readPropertyList("include-in-header", []);
+        if (includeInHeader) {
+            includeInHeader.forEach( (item: string) => {
+                // console.log(item);
+                const itemPath = extractPath(item);
+                if (itemPath) {
+                    // console.log(itemPath);
+                    args.push("--include-in-header");
+                    args.push(itemPath);
+                }
+            });
+        }
+        const shiftHeadingLevelBy = this.resolveArgumentValue(
+            configArgs,
+            "shiftHeadingLevelBy",
+            "shift-heading-level-by",
+            "shiftHeadingLevelBy",
+            () => "",
+        );
+        if (shiftHeadingLevelBy !== "") {
+            args.push("--shift-heading-level-by");
+            args.push(shiftHeadingLevelBy);
+        }
         if (true) {
             // https://github.com/raghur/mermaid-filter
             // npm i -g mermaid-filter
@@ -521,7 +536,7 @@ class ProductionSetupModal extends Modal {
         }
         if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
             args.push( ... [
-            "-H", this.composeResourcePath(
+            "--include-in-header", this.composeResourcePath(
                 "publication",
                 "pandoc",
                 "templates",
@@ -554,7 +569,7 @@ class ProductionSetupModal extends Modal {
             // credit: git@github.com:alexeygumirov/pandoc-beamer-how-to.git
             // Alexey Gumirov <ag_devops@die-optimisten.net>
             args.push(... [
-                "-H", this.composeResourcePath(
+                "--include-in-header", this.composeResourcePath(
                     "publication",
                     "pandoc",
                     "templates",
