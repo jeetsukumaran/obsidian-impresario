@@ -1,7 +1,7 @@
 {
 	"id": "impresario-plugin",
 	"name": "Impresario",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"minAppVersion": "1.4.14",
 	"description": "Documentation production system.",
 	"author": "Jeet Sukumaran",
