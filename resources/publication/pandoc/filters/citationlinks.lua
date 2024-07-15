@@ -22,8 +22,9 @@ function Inlines(inlines)
             local citekey = inline.target:match("^-?@(.+)$")
 			table.insert(newInlines, replaceWithCitation(inline, citekey))
         elseif inline.t == 'Str' then
-            local citekey = inline.text:match("^-?@(.+)$")
-			table.insert(newInlines, replaceWithCitation(inline, citekey))
+            -- local citekey = inline.text:match("^-?@(.+)$")
+			-- table.insert(newInlines, replaceWithCitation(inline, citekey))
+            table.insert(newInlines, inline)
         else
             table.insert(newInlines, inline)
         end
