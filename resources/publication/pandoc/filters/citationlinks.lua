@@ -19,10 +19,10 @@ function Inlines(inlines)
     local newInlines = {}
     for _, inline in ipairs(inlines) do
         if inline.t == 'Link' then
-            local citekey = inline.target:match("^@(.+)$")
+            local citekey = inline.target:match("^-?@(.+)$")
 			table.insert(newInlines, replaceWithCitation(inline, citekey))
         elseif inline.t == 'Str' then
-            local citekey = inline.text:match("^@(.+)$")
+            local citekey = inline.text:match("^-?@(.+)$")
 			table.insert(newInlines, replaceWithCitation(inline, citekey))
         else
             table.insert(newInlines, inline)
