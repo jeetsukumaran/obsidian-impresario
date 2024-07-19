@@ -1,7 +1,3 @@
-// To compile:
-// $ npm i
-// $ npm run build
-
 import {
     App,
     ButtonComponent,
@@ -19,14 +15,9 @@ import {
     TFolder,
     TAbstractFile,
 } from 'obsidian';
-// import * as child_process from 'child_process'
 import { spawn, exec } from "child_process";
 import * as path from "path";
 import * as os from 'os';
-
-// Custom View
-// https://docs.obsidian.md/Plugins/User+interface/Views
-// import { ImpresarioNavigatorView, VIEW_TYPE_APEXNAVIGATOR } from "./view";
 
 interface ImpresarioSettings {
     configuration: { [key: string]: string };
@@ -47,7 +38,6 @@ interface FrontmatterCache {
     date?: string;
     tags?: string[];
 }
-
 
 class ProductionParameter {
     label = "Parameter"
@@ -123,7 +113,6 @@ class ProductionSetupModal extends Modal {
         xwiki: '.txt',
         zimwiki: '.txt'
     };
-    // }}}
 
     sourceFile: TFile
     sourceFilePath: string
@@ -223,7 +212,6 @@ class ProductionSetupModal extends Modal {
     }
 
     defaultOutputFormat(): string {
-        // return this.readDefaultString("production-output-format", "beamer")
         let outputFormatPropertyName = this.resolveArgumentValue(
             {},
             "",
@@ -243,19 +231,11 @@ class ProductionSetupModal extends Modal {
             () => "artifacts",
         )
         return rval;
-        // return this.resolveArgumentValue(
-        //     configArgs,
-        //     "defaultBibliographyPath",
-        //     "bibliographic-database-path",
-        //     "bibliographyPath",
-        //     () => "",
-        // );
     }
 
     defaultSlideLevel(): string {
         return this.readPropertyString(
             "production-slide-level",
-            // this.composeAbsolutePath(this.sourceFileSubdirectory)
             "2",
         )
     }
@@ -298,16 +278,6 @@ class ProductionSetupModal extends Modal {
         outputDirectoryInput.addEventListener('input', updateAnnotation);
         updateAnnotation(); // Initial update
 
-        // contentEl.createEl("h3", { text: "Production Parameters" });
-        // contentEl.createEl("h4", { text: "Slide Level" });
-        // const slideLevelContainer: HTMLElement = contentEl.createEl("div", {"cls": "impresario-modal-input-container"})
-        // const slideLevelInput = slideLevelContainer.createEl('input', {
-        //     type: 'number',
-        //     cls: ["impresario-modal-input-element"]
-        // });
-        // slideLevelInput.value = this.defaultSlideLevel()
-        // slideLevelInput.setAttribute('min', '0'); // Set 'min' attribute separately
-
         contentEl.createEl("br")
         contentEl.createEl("br")
         const finalButtonsContainer = new Setting(contentEl)
@@ -316,50 +286,142 @@ class ProductionSetupModal extends Modal {
         const verbosityToggle = finalButtonsContainer.addToggle( toggle => {
             toggle.setValue(isVerbose)
                 .onChange(async (value) => {
-                    isVerbose = value;
+                    isVerbose = value
+//
+//
+//
+
                 })
-        })
-        finalButtonsContainer.addButton( (button: ButtonComponent) => {
+        });
+        finalButtonsContainer.addButton((button: ButtonComponent) => {
             button
                 .setButtonText("Produce!")
-                .onClick( () => {
-                    // ensureDirectoryExists(this.app, this.outputAbsolutePath);
+                .onClick(() => {
                     this.execute(
                         "pandoc",
                         {
                             outputFormat: formatDropdown.value,
                             outputSubpath: this.outputSubpath,
                             outputAbsolutePath: this.outputAbsolutePath,
-                            // slideLevel: slideLevelInput.value,
                             verbosity: isVerbose ? "true" : "",
                         },
                     );
                     this.close();
                 });
         });
+
+        finalButtonsContainer.addButton((button: ButtonComponent) => {
+            button
+                .setButtonText("Produce (Split Bibliography)")
+                .onClick(() => {
+                    this.produceSplitBibliography(
+                        isVerbose,
+                        formatDropdown.value,
+                        outputDirectoryInput.value
+                    );
+                    this.close();
+                });
+        });
     }
 
-    backgroundRun(
-        isVerbose: boolean = false,
+    produceSplitBibliography(
+        isVerbose: boolean,
+        outputFormat: string,
+        outputDirectory: string
     ) {
+        const outputSubpathWithoutBibliography = path.parse(this.sourceFilePath).name + "-without-bibliography";
+        const outputSubpathBibliographyOnly = path.parse(this.sourceFilePath).name + "-bibliography-only";
+        this.execute(
+            "pandoc",
+            {
+                outputFormat: outputFormat,
+                outputSubpath: outputSubpathWithoutBibliography,
+                outputAbsolutePath: this.outputAbsolutePath,
+                verbosity: isVerbose ? "true" : "",
+                isSuppressBibliography: "true",
+            },
+        );
+        this.execute(
+            "pandoc",
+            {
+                outputFormat: outputFormat,
+                outputSubpath: outputSubpathBibliographyOnly,
+                outputAbsolutePath: this.outputAbsolutePath,
+                verbosity: isVerbose ? "true" : "",
+                isSuppressBibliography: "true",
+            },
+        );
+
+        // const pandocCommandWithoutBibliography = [
+        //     "pandoc",
+        //     "--standalone",
+        //     "--resource-path", this.vaultRootPath,
+        //     this.sourceFileAbsolutePath,
+        //     "-o", outputSubpathWithoutBibliography,
+        //     "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "scratch.lua"),
+        //     "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "imageAttrs.lua"),
+        //     "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "citationlinks.lua"),
+        //     "--filter", this.composeResourcePath("publication", "pandoc", "filters", "tikzblock.py"),
+        // ];
+
+        // const pandocCommandBibliographyOnly = [
+        //     "pandoc",
+        //     "--standalone",
+        //     "--bibliography", this.resolveArgumentValue({}, "defaultBibliographyPath", "bibliographic-database-path", "bibliographyPath", () => ""),
+        //     "-o", outputSubpathBibliographyOnly
+        // ];
+
+        // if (isVerbose) {
+        //     pandocCommandWithoutBibliography.push("--verbose");
+        //     pandocCommandBibliographyOnly.push("--verbose");
+        // }
+
+        // const runCommand = (command: string[], description: string) => {
+        //     const modal = new OutputModal(this.app, command.join(" "), description, this.isAutoOpenOutput, this.isAutoClose);
+        //     modal.open();
+        //     try {
+        //         ensureParentDirectoryExists(this.app, description).then(() => {
+        //             const process = spawn(command[0], command.slice(1), { cwd: os.tmpdir() });
+        //             modal.setMessage("Starting production run for " + description);
+        //             modal.registerStartedProcess();
+        //             process.stdout?.on('data', (data) => modal.appendOutput(data.toString()));
+        //             process.stderr?.on('data', (data) => modal.appendError(data.toString()));
+        //             process.on('close', (code) => {
+        //                 if (code === 0) {
+        //                     modal.setMessage(`Document successfully produced: '${description}'`);
+        //                 } else {
+        //                     modal.setMessage(`Document production failed with code: ${code}`);
+        //                 }
+        //                 modal.registerClosedProcess();
+        //             });
+        //         }).catch();
+        //     } catch (err) {
+        //         modal.appendMessage(`Failed to produce document: ${err}`);
+        //     }
+        // };
+
+        // runCommand(pandocCommandWithoutBibliography, outputSubpathWithoutBibliography);
+        // runCommand(pandocCommandBibliographyOnly, outputSubpathBibliographyOnly);
+    }
+
+    backgroundRun(isVerbose: boolean = false) {
         let outputFormat = this.defaultOutputFormat();
         let outputDirectory = this.defaultOutputDirectory();
-        // let slideLevel = this.defaultSlideLevel();
         this.outputSubpath = this.composeOutputSubpath(
             outputFormat || "",
             outputDirectory || "",  // Changed from textContent to value
-        )
+        );
         this.execute(
             "pandoc",
             {
                 outputFormat: outputFormat,
                 outputSubpath: this.outputSubpath,
                 outputAbsolutePath: this.composeAbsolutePath(this.outputSubpath),
-                // slideLevel: this.defaultSlideLevel(),
                 verbosity: isVerbose ? "true" : "",
             },
         );
     }
+
     composeResourcePath(...subpaths: string[]): string {
         return path.join(
             this.vaultRootPath,
@@ -367,13 +429,12 @@ class ProductionSetupModal extends Modal {
             "plugins",
             "obsidian-impresario",
             "resources",
-            // "publication",
-            ... subpaths,
-        )
+            ...subpaths,
+        );
     }
 
     resolveArgumentValue(
-        configArgs: { [key:string]: string },
+        configArgs: { [key: string]: string },
         configKey: string,
         propertyName: string,
         settingsName: string,
@@ -389,14 +450,10 @@ class ProductionSetupModal extends Modal {
         return rval || "";
     }
 
-    composeArgs(
-        configArgs: { [key:string]: string }
-    ): string[] {
-        const outputAbsolutePath = configArgs.outputAbsolutePath
+    composeArgs(configArgs: { [key: string]: string }): string[] {
+        const outputAbsolutePath = configArgs.outputAbsolutePath;
         const fromElements = [
-            // "markdown_strict",
             "markdown",
-            // "mediawiki_links",
             "wikilinks_title_after_pipe",
             "pipe_tables",
             "backtick_code_blocks",
@@ -408,192 +465,82 @@ class ProductionSetupModal extends Modal {
             "fenced_divs",
             "citations",
             "link_attributes",
-        ]
+        ];
         const args = [
             "--from", fromElements.join("+"),
             "--standalone",
-            // "-t", configArgs.outputFormat,
             "-t", configArgs.outputFormat,
             "--resource-path", this.vaultRootPath,
             this.sourceFileAbsolutePath,
             "-o", outputAbsolutePath,
         ];
         if (true) {
-            args.push(... [
-                "--lua-filter", this.composeResourcePath(
-                    "publication",
-                    "pandoc",
-                    "filters",
-                    "scratch.lua"
-                )]);
-            args.push(... [
-                "--lua-filter", this.composeResourcePath(
-                    "publication",
-                    "pandoc",
-                    "filters",
-                    "imageAttrs.lua"
-                )]);
-            args.push(... [
-                "--lua-filter", this.composeResourcePath(
-                    "publication",
-                    "pandoc",
-                    "filters",
-                    "citationlinks.lua"
-                )]);
-            args.push(... [
-                "--filter", this.composeResourcePath(
-                    "publication",
-                    "pandoc",
-                    "filters",
-                    "tikzblock.py"
-                )]);
+            args.push(...[
+                "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "scratch.lua"),
+                "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "imageAttrs.lua"),
+                "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "citationlinks.lua"),
+                "--filter", this.composeResourcePath("publication", "pandoc", "filters", "tikzblock.py")
+            ]);
         }
-        // if (false) {
-        //     args.push(... [
-        //         "--filter", this.composeResourcePath(
-        //             "publication",
-        //             "pandoc",
-        //             "filters",
-        //             "boxes.py"
-        //         )]);
-        // }
-        if (configArgs.isVerbose) {
+        if (configArgs.verbosity) {
             args.push("--verbose");
         }
-        const extractPath = (item: string) => item?.trim().replace(/^\[\[/g, "").replace(/\]\]$/g,"");
+        const extractPath = (item: string) => item?.trim().replace(/^\[\[/g, "").replace(/\]\]$/g, "");
         if (true) {
-            args.push("--citeproc")
-            const bibliographyDataPaths: string[] = []
-            let customBibPath = this.resolveArgumentValue(
-                configArgs,
-                "defaultBibliographyPath",
-                "bibliographic-database-path",
-                "bibliographyPath",
-                () => "",
-            );
+            args.push("--citeproc");
+            const bibliographyDataPaths: string[] = [];
+            let customBibPath = this.resolveArgumentValue(configArgs, "defaultBibliographyPath", "bibliographic-database-path", "bibliographyPath", () => "");
             if (customBibPath) {
                 bibliographyDataPaths.push(extractPath(customBibPath));
             }
-            bibliographyDataPaths.push(
-                ... this.readPropertyList("bibliography")
-                    .map(extractPath)
-            // .map( (filePath: string) => path.join(this.vaultRootPath, filePath))
-            )
-            bibliographyDataPaths.forEach( (bdPath) => args.push(... ["--bibliography", bdPath]) )
-            args.push( ... this.readPropertyList("resource-path").map(extractPath) );
-            args.push( ... this.readPropertyList("resource-paths").map(extractPath) );
+            bibliographyDataPaths.push(...this.readPropertyList("bibliography").map(extractPath));
+            bibliographyDataPaths.forEach((bdPath) => args.push(...["--bibliography", bdPath]));
+            args.push(...this.readPropertyList("resource-path").map(extractPath));
+            args.push(...this.readPropertyList("resource-paths").map(extractPath));
+        }
+        if (configArgs.isSuppressBibliography) {
+            args.push("-M");
+            args.push("suppress-bibliography=true");
         }
         const includeInHeader: string[] = this.readPropertyList("include-in-header", []);
         if (includeInHeader) {
-            includeInHeader.forEach( (item: string) => {
-                // console.log(item);
+            includeInHeader.forEach((item: string) => {
                 const itemPath = extractPath(item);
                 if (itemPath) {
-                    // console.log(itemPath);
                     args.push("--include-in-header");
                     args.push(itemPath);
                 }
             });
         }
-        const shiftHeadingLevelBy = this.resolveArgumentValue(
-            configArgs,
-            "shiftHeadingLevelBy",
-            "shift-heading-level-by",
-            "shiftHeadingLevelBy",
-            () => "",
-        );
+        const shiftHeadingLevelBy = this.resolveArgumentValue(configArgs, "shiftHeadingLevelBy", "shift-heading-level-by", "shiftHeadingLevelBy", () => "");
         if (shiftHeadingLevelBy !== "") {
             args.push("--shift-heading-level-by");
             args.push(shiftHeadingLevelBy);
         }
         if (true) {
-            // https://github.com/raghur/mermaid-filter
-            // npm i -g mermaid-filter
-            // Note that pandoc-crossref will automatically find and use the
-            // caption= option. Also note that the order of applying the
-            // filters matters - you must apply mermaid-filter before
-            // pandoc-crossref so that pandoc-crossref can find the images.)
-            args.push(... [
-                "--filter", "mermaid-filter",
-            ])
+            args.push("--filter", "mermaid-filter");
         }
         if (true) {
-            // come after citations are processed
-            args.push(... [
-                "--lua-filter", this.composeResourcePath(
-                    "publication",
-                    "pandoc",
-                    "filters",
-                    "callouts.lua"
-                )]);
-            args.push(... [
-                "--lua-filter", this.composeResourcePath(
-                    "publication",
-                    "pandoc",
-                    "filters",
-                    "boxes.lua"
-                )]);
+            args.push(...[
+                "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "callouts.lua"),
+                "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "boxes.lua")
+            ]);
         }
         if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
-            args.push( ... [
-            "--include-in-header", this.composeResourcePath(
-                "publication",
-                "pandoc",
-                "templates",
-                "packages.latex",
-            )]);
+            args.push("--include-in-header", this.composeResourcePath("publication", "pandoc", "templates", "packages.latex"));
         }
-        // if (configArgs.outputFormat === "pdf") {
-        //     args.push(... [
-        //         "--template", this.composeResourcePath(
-        //             "publication",
-        //             "pandoc",
-        //             "templates",
-        //             // "default_mod.latex",
-        //             "pdfdefault.tex",
-        //         ),
-        //     ])
-        // }
         if (configArgs.outputFormat === "beamer") {
-            let slideLevel = this.resolveArgumentValue(
-                configArgs,
-                "defaultSlideLevel",
-                "slide-level",
-                "slideLevel",
-                () => "2",
-            );
-            args.push(... [
-                "--slide-level",
-                slideLevel,
-            ])
-            // credit: git@github.com:alexeygumirov/pandoc-beamer-how-to.git
-            // Alexey Gumirov <ag_devops@die-optimisten.net>
-            args.push(... [
-                "--include-in-header", this.composeResourcePath(
-                    "publication",
-                    "pandoc",
-                    "templates",
-                    "beamer-preamble.tex"
-                ),
-                // "--template", this.composeResourcePath(
-                //     "publication",
-                //     "pandoc",
-                //     "templates",
-                //     // "default_mod.latex",
-                //     "beamer-template.tex",
-                // ),
-            ])
+            let slideLevel = this.resolveArgumentValue(configArgs, "defaultSlideLevel", "slide-level", "slideLevel", () => "2");
+            args.push("--slide-level", slideLevel);
+            args.push("--include-in-header", this.composeResourcePath("publication", "pandoc", "templates", "beamer-preamble.tex"));
         }
-        return args
+        return args;
     }
 
-    execute(
-        commandPath: string,
-        configArgs: { [key:string]: string }
-    ) {
-        const commandArgs = this.composeArgs(configArgs)
-        const formattedCommand = commandPath + " " + commandArgs.join(" ")
-        const outputAbsolutePath = configArgs.outputAbsolutePath
+    execute(commandPath: string, configArgs: { [key: string]: string }) {
+        const commandArgs = this.composeArgs(configArgs);
+        const formattedCommand = commandPath + " " + commandArgs.join(" ");
+        const outputAbsolutePath = configArgs.outputAbsolutePath;
         const modal = new OutputModal(
             app,
             formattedCommand,
@@ -604,24 +551,14 @@ class ProductionSetupModal extends Modal {
         modal.open();
         try {
             ensureParentDirectoryExists(this.app, this.outputSubpath)
-                .then( () => {
-                    const process = spawn(
-                        commandPath,
-                        commandArgs,
-                        // { cwd: this.vaultRootPath },
-                        { cwd: os.tmpdir() },
-                    );
-                    // const process = exec(commandPath + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
-                    // const process = exec("ls" + " " + commandArgs.join(" "), { cwd: this.vaultRootPath });
-                    // const process = exec("echo $PATH")
-                    modal.setMessage("Starting production run")
-                    modal.registerStartedProcess()
+                .then(() => {
+                    const process = spawn(commandPath, commandArgs, { cwd: os.tmpdir() });
+                    modal.setMessage("Starting production run");
+                    modal.registerStartedProcess();
                     process.stdout?.on('data', (data) => {
-                        // console.log(data)
                         modal.appendOutput(data);
                     });
                     process.stderr?.on('data', (data) => {
-                        // console.log(data)
                         modal.appendError(data);
                     });
                     process.on('close', (code) => {
@@ -630,13 +567,12 @@ class ProductionSetupModal extends Modal {
                         } else {
                             modal.setMessage(`Document production failed with code: ${code}`);
                         }
-                        modal.registerClosedProcess()
+                        modal.registerClosedProcess();
                     });
                 })
                 .catch();
         } catch (err) {
             modal.appendMessage(`Failed to produce document: ${err}`);
-            // setTimeout(() => modal.close(), 2000); // Close the modal after 2 seconds
         }
     }
 }
@@ -651,7 +587,7 @@ class Producer {
         activeFile: TFile,
         settings: ImpresarioSettings,
     ) {
-        this.activeFile = activeFile
+        this.activeFile = activeFile;
         this.vaultRootPath = this.getVaultBasePath();
         this.pluginResourcePath = path.join(
             this.vaultRootPath,
@@ -671,42 +607,29 @@ class Producer {
         return "";
     }
 
-    // getProductionOutputFormat(): string {
-    //     const cache = app.metadataCache.getFileCache(this.activeFile);
-    //     return cache
-    //         && cache.frontmatter
-    //         && (
-    //             cache.frontmatter['production-output-format']
-    //             || cache.frontmatter["output-format"]
-    //             || "pdf"
-    //         )
-    // }
-
     produce(
         isOpenSetupModal: boolean,
         isAutoOpenOutput: boolean,
         isVerboseRun: boolean,
     ) {
         if (!this.activeFile.path.endsWith(".md")) {
-            new Notice("Cannot produce active file: not in Markdown format")
-            return
+            new Notice("Cannot produce active file: not in Markdown format");
+            return;
         }
-        let isAutoClose = isOpenSetupModal ?  false : true;
+        let isAutoClose = isOpenSetupModal ? false : true;
         const productionSetupModal = new ProductionSetupModal(
             app,
             this.activeFile,
             isAutoOpenOutput,
             isAutoClose,
             this.settings,
-        )
+        );
         if (isOpenSetupModal) {
             productionSetupModal.open();
         } else {
             productionSetupModal.backgroundRun(isVerboseRun);
         }
     }
-
-
 }
 
 class OutputModal extends Modal {
@@ -737,106 +660,59 @@ class OutputModal extends Modal {
         this.isAutoOpenOutput = isAutoOpenOutput;
         this.isAutoClose = isAutoClose;
 
-        // Command Section
         this.contentEl.createEl('h3', { text: 'Command' });
-        this.commandEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
+        this.commandEl = this.contentEl.createEl('div', { cls: ["console-display-inner"] });
         this.commandEl.setText(command);
 
-        // Button to copy command
         this.copyCommandBtn = this.contentEl.createEl('button', { text: 'Copy Command' });
         this.copyCommandBtn.onclick = () => this.copyToClipboard(command);
 
-        // Button to copy command
-        // this.copyCommandBtn = this.contentEl.createEl('button', { text: 'Copy Command' });
-        // this.copyCommandBtn.onclick = () => this.copyToClipboard(command);
-
-        // Message Section
         this.contentEl.createEl('h3', { text: 'Status' });
-        this.messageEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
+        this.messageEl = this.contentEl.createEl('div', { cls: ["console-display-inner"] });
         this.messageEl.setText("Running production ...");
 
-        // Output Section
-        // this.contentEl.createEl('h3', { text: 'Output' });
-        // this.outputEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
-
-        // Error Section
         this.contentEl.createEl('h3', { text: 'Pandoc' });
-        this.errorEl = this.contentEl.createEl('div', {cls: ["console-display-inner"]});
+        this.errorEl = this.contentEl.createEl('div', { cls: ["console-display-inner"] });
 
-        // Result Section
         this.contentEl.createEl('h3', { text: 'Destination' });
         this.destinationEl = this.contentEl.createEl(
             'div',
-            {cls: ["console-display-inner"]}
+            { cls: ["console-display-inner"] }
         );
         this.destinationEl.style.height = "6rem";
         this.destinationEl.setText(outputSubpath);
         this.copyDestinationBtn = this.contentEl.createEl('button', { text: 'Copy Path' });
         this.copyDestinationBtn.onclick = () => this.copyToClipboard(outputSubpath);
 
-
-        // Button to copy output
-        // this.copyOutputBtn = this.contentEl.createEl('button', { text: 'Copy Output' });
-        // this.copyOutputBtn.setAttribute('disabled', 'true'); // Disable button initially
-        // this.copyOutputBtn.onclick = () => this.copyToClipboard(this.outputEl.getText());
-
-        // Open Button
         this.openDestination = this.contentEl.createEl('button', { text: 'Open' });
         this.openDestination.setAttribute('disabled', 'true'); // Disable done button initially
         this.openDestination.onclick = () => {
-            this.app.workspace.openLinkText(outputSubpath, '', "split")
+            this.app.workspace.openLinkText(outputSubpath, '', "split");
         };
 
-        // Close (Process continues running in background!)
         this.closeBtn = this.contentEl.createEl('button', { text: 'Close' });
         this.closeBtn.onclick = () => this.close();
-
     }
-
-    // appendOutput(text: string) {
-    //     // let currentText = this.outputEl.getText();
-    //     // this.outputEl.setText(`${currentText}\n${text}`);
-    //     const rowEl = this.outputEl.createEl('div', {cls: ["console-display-inner-row"]});
-    //     rowEl.setText(text)
-    //     this.copyOutputBtn.removeAttribute('disabled'); // Enable copy button after appending output
-    //     this.closeBtn.removeAttribute('disabled'); // Enable close button after appending output
-    // }
 
     setMessage(text: string) {
-        this.messageEl.empty()
-        const rowEl = this.messageEl.createEl('div', {cls: ["console-display-inner-row"]});
-        rowEl.setText(text)
-        // this.closeBtn.removeAttribute('disabled'); // Enable close button after appending message
+        this.messageEl.empty();
+        const rowEl = this.messageEl.createEl('div', { cls: ["console-display-inner-row"] });
+        rowEl.setText(text);
     }
     appendMessage(text: string) {
-        // let currentText = this.messageEl.getText();
-        // this.messageEl.setText(`${currentText}\n${text}`);
-        const rowEl = this.messageEl.createEl('div', {cls: ["console-display-inner-row"]});
-        rowEl.setText(text)
-        // this.copyMessageBtn.removeAttribute('disabled'); // Enable copy button after appending message
-        // this.closeBtn.removeAttribute('disabled'); // Enable close button after appending message
+        const rowEl = this.messageEl.createEl('div', { cls: ["console-display-inner-row"] });
+        rowEl.setText(text);
     }
 
     appendOutput(text: string) {
-        // let currentText = this.outputEl.getText();
-        // this.outputEl.setText(`${currentText}\n${text}`);
-        const rowEl = this.outputEl.createEl('div', {cls: ["console-display-inner-row"]});
-        rowEl.setText(text)
-        // this.copyOutputBtn.removeAttribute('disabled'); // Enable copy button after appending output
-        // this.closeBtn.removeAttribute('disabled'); // Enable close button after appending output
+        const rowEl = this.outputEl.createEl('div', { cls: ["console-display-inner-row"] });
+        rowEl.setText(text);
     }
 
     appendError(text: string) {
         const currentText = this.errorEl.getText();
         this.errorEl.setText(`${currentText}\n${text}`);
-
-        // const rowEl = this.errorEl.createEl('div', {cls: ["console-display-inner-row"]});
-        // rowEl.setText(text)
-
-        // this.copyErrorBtn.removeAttribute('disabled'); // Enable copy button after appending error
-        // this.closeBtn.removeAttribute('disabled'); // Enable close button after appending error
     }
-
 
     registerStartedProcess() {
         this.messageEl.classList.add("process-is-running");
@@ -870,12 +746,8 @@ class OutputModal extends Modal {
     }
 }
 
-
-
-
 export default class Impresario extends Plugin {
     settings: ImpresarioSettings;
-
 
     produceActiveFile(
         isOpenSetupModal: boolean,
@@ -904,37 +776,28 @@ export default class Impresario extends Plugin {
     async onload() {
         await this.loadSettings();
 
-        // this.addRibbonIcon("factory", "Produce!", () => {
-        // this.addRibbonIcon("blocks", "Produce!", () => {
         this.addRibbonIcon("theater", "Produce!", () => {
             this.produceActiveFile(true, false, false);
         });
         this.addCommand({
             id: 'impresario-produce-default',
             name: 'Produce the active file',
-            // callback: this.produceActiveFile,
             callback: () => this.produceActiveFile(false, true, false), // arrow function for lexical closure
         });
         this.addCommand({
             id: 'impresario-produce-default-background',
             name: 'Produce the active file in the background',
-            // callback: this.produceActiveFile,
             callback: () => this.produceActiveFile(false, false, false), // arrow function for lexical closure
         });
         this.addCommand({
             id: 'impresario-produce-setup',
             name: 'Set up a production run for the active file',
-            // callback: this.produceActiveFile,
             callback: () => this.produceActiveFile(true, false, false), // arrow function for lexical closure
         });
         this.addSettingTab(new ImpresarioSettingTab(this.app, this));
     }
 
-
     onunload() {
-    // clear existing leaves
-    // disabled for development
-    // this.app.workspace.detachLeavesOfType(VIEW_TYPE_APEXNAVIGATOR)
     }
 
     async loadSettings() {
@@ -953,7 +816,6 @@ export default class Impresario extends Plugin {
             console.log("No frontmatter found in the file.");
         }
     }
-
 }
 
 class ImpresarioSettingTab extends PluginSettingTab {
@@ -965,29 +827,23 @@ class ImpresarioSettingTab extends PluginSettingTab {
     }
 
     display(): void {
-        const {containerEl} = this;
+        const { containerEl } = this;
         containerEl.empty();
     }
 }
 
 async function ensureDirectoryExists(app: App, dirPath: string): Promise<void> {
-    // Check if the parent directory exists
-
     let dirNode = app.vault.getAbstractFileByPath(dirPath) as TFolder;
     if (!dirNode) {
-        // Create the parent directory if it doesn't exist
         await app.vault.createFolder(dirPath);
     }
 }
 
 export async function ensureParentDirectoryExists(app: App, filePath: string): Promise<void> {
     const parentDirPath = filePath.substring(0, filePath.lastIndexOf('/'));
-
-    // Check if the parent directory exists
     let parentDir = app.vault.getAbstractFileByPath(parentDirPath) as TFolder;
 
     if (!parentDir) {
-        // Create the parent directory if it doesn't exist
         await createDirectory(app, parentDirPath);
     }
 }
@@ -1003,10 +859,13 @@ export async function createDirectory(app: App, dirPath: string): Promise<TFolde
         currentDir = app.vault.getAbstractFileByPath(currentPath);
 
         if (!currentDir) {
-            // Create the directory if it doesn't exist
             currentDir = await app.vault.createFolder(currentPath);
         }
     }
 
     return currentDir as TFolder;
 }
+
+//
+//
+//
