@@ -156,6 +156,14 @@ class ProductionSetupModal extends Modal {
         return "";
     }
 
+    composeLocalAbsolutePath(
+        fileBaseName: string,
+        extension: string = "",
+        fileDirectory: string = "",
+    ): string {
+        return path.join(this.vaultRootPath, fileDirectory, fileBaseName + (extension.startsWith(".") ? extension : ("." + extension)));
+    }
+
     composeAbsolutePath(subpath: string): string {
         return path.join(this.vaultRootPath, subpath)
     }
@@ -329,8 +337,16 @@ class ProductionSetupModal extends Modal {
         outputFormat: string,
         outputDirectory: string
     ) {
-        const outputSubpathWithoutBibliography = path.parse(this.sourceFilePath).name + "-without-bibliography." + this.outputFormatMap[outputFormat];
-        const outputSubpathBibliographyOnly = path.parse(this.sourceFilePath).name + "-bibliography-only." + this.outputFormatMap[outputFormat];
+        const outputSubpathWithoutBibliography = this.composeLocalAbsolutePath(
+            path.parse(this.sourceFilePath).name,
+            this.outputFormatMap[outputFormat],
+            outputDirectory,
+        );
+        const outputSubpathBibliographyOnly = this.composeLocalAbsolutePath(
+            path.parse(this.sourceFilePath).name + ".references",
+            this.outputFormatMap[outputFormat],
+            outputDirectory,
+        );
         this.execute(
             "pandoc",
             {
