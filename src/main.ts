@@ -329,14 +329,14 @@ class ProductionSetupModal extends Modal {
         outputFormat: string,
         outputDirectory: string
     ) {
-        const outputSubpathWithoutBibliography = path.parse(this.sourceFilePath).name + "-without-bibliography";
-        const outputSubpathBibliographyOnly = path.parse(this.sourceFilePath).name + "-bibliography-only";
+        const outputSubpathWithoutBibliography = path.parse(this.sourceFilePath).name + "-without-bibliography." + this.outputFormatMap[outputFormat];
+        const outputSubpathBibliographyOnly = path.parse(this.sourceFilePath).name + "-bibliography-only." + this.outputFormatMap[outputFormat];
         this.execute(
             "pandoc",
             {
                 outputFormat: outputFormat,
                 outputSubpath: outputSubpathWithoutBibliography,
-                outputAbsolutePath: this.outputAbsolutePath,
+                outputAbsolutePath: outputSubpathWithoutBibliography,
                 verbosity: isVerbose ? "true" : "",
                 isSuppressBibliography: "true",
             },
@@ -346,9 +346,9 @@ class ProductionSetupModal extends Modal {
             {
                 outputFormat: outputFormat,
                 outputSubpath: outputSubpathBibliographyOnly,
-                outputAbsolutePath: this.outputAbsolutePath,
+                outputAbsolutePath: outputSubpathBibliographyOnly,
                 verbosity: isVerbose ? "true" : "",
-                isSuppressBibliography: "true",
+                isSuppressNonBibliography: "true",
             },
         );
 
@@ -485,6 +485,9 @@ class ProductionSetupModal extends Modal {
         if (configArgs.verbosity) {
             args.push("--verbose");
         }
+        if (configArgs.isSuppressNonBibliography) {
+            args.push(... ["--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "bibonly.lua")]);
+        }
         const extractPath = (item: string) => item?.trim().replace(/^\[\[/g, "").replace(/\]\]$/g, "");
         if (true) {
             args.push("--citeproc");
@@ -537,7 +540,10 @@ class ProductionSetupModal extends Modal {
         return args;
     }
 
-    execute(commandPath: string, configArgs: { [key: string]: string }) {
+    execute(
+        commandPath: string,
+        configArgs: { [key: string]: string }
+    ) {
         const commandArgs = this.composeArgs(configArgs);
         const formattedCommand = commandPath + " " + commandArgs.join(" ");
         const outputAbsolutePath = configArgs.outputAbsolutePath;
@@ -548,8 +554,8 @@ class ProductionSetupModal extends Modal {
             this.isAutoOpenOutput,
             this.isAutoClose,
         );
-        modal.open();
         try {
+            modal.open();
             ensureParentDirectoryExists(this.app, this.outputSubpath)
                 .then(() => {
                     const process = spawn(commandPath, commandArgs, { cwd: os.tmpdir() });
