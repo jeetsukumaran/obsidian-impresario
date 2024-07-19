@@ -364,7 +364,7 @@ class ProductionSetupModal extends Modal {
                 outputSubpath: outputSubpathBibliographyOnly,
                 outputAbsolutePath: outputSubpathBibliographyOnly,
                 verbosity: isVerbose ? "true" : "",
-                isSuppressNonBibliography: "true",
+                isBibliographyOnly: "true",
             },
         );
 
@@ -501,8 +501,10 @@ class ProductionSetupModal extends Modal {
         if (configArgs.verbosity) {
             args.push("--verbose");
         }
-        if (configArgs.isSuppressNonBibliography) {
+        if (configArgs.isBibliographyOnly) {
             args.push(... ["--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "bibonly.lua")]);
+            args.push("-M");
+            args.push("title=References");
         }
         const extractPath = (item: string) => item?.trim().replace(/^\[\[/g, "").replace(/\]\]$/g, "");
         if (true) {
