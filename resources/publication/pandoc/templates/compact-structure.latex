@@ -1,0 +1,34 @@
+
+% Reduce space around section and subsection titles
+\usepackage[compact]{titlesec}
+\titlespacing*{\section}{0pt}{*1}{*1}
+\titlespacing*{\subsection}{0pt}{*0.8}{*0.8}
+\titlespacing*{\subsubsection}{0pt}{*0.6}{*0.6}
+
+% Reduce font size for titles
+\titleformat{\section}[block]{\normalfont\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}[block]{\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}[block]{\normalfont\small\bfseries}{\thesubsubsection}{1em}{}
+
+% Reduce main title size and spacing
+\usepackage{titling}
+\pretitle{\vspace{-3em}\begin{center}\large\bfseries}
+\posttitle{\end{center}\vspace{-2em}}
+\preauthor{\vspace{-1em}\begin{center}\large}
+\postauthor{\end{center}}
+\predate{\vspace{-1em}\begin{center}\large}
+\postdate{\end{center}\vspace{-1em}}
+
+% Reduce spacing before and after equations
+\expandafter\def\expandafter\normalsize\expandafter{%
+  \normalsize
+  \setlength\abovedisplayskip{5pt}
+  \setlength\belowdisplayskip{5pt}
+  \setlength\abovedisplayshortskip{5pt}
+  \setlength\belowdisplayshortskip{5pt}
+}
+
+% Reduce spacing around itemize and enumerate
+\usepackage{enumitem}
+\setlist{noitemsep}
+

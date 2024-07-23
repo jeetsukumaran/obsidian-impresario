@@ -533,15 +533,15 @@ class ProductionSetupModal extends Modal {
                 }
             });
         }
-        const headerIncludes: string[] = this.readPropertyList("header-includes", []);
-        if (headerIncludes) {
-            headerIncludes.forEach((item: string) => {
-                item = item.trim();
-                if (item) {
-                    args.push(`--metadata=header-includes:${item}`);
-                }
-            });
-        }
+        // const headerIncludes: string[] = this.readPropertyList("header-includes", []);
+        // if (headerIncludes) {
+        //     headerIncludes.forEach((item: string) => {
+        //         item = item.trim();
+        //         if (item) {
+        //             args.push(`--metadata=header-includes:${item}`);
+        //         }
+        //     });
+        // }
         const shiftHeadingLevelBy = this.resolveArgumentValue(configArgs, "shiftHeadingLevelBy", "shift-heading-level-by", "shiftHeadingLevelBy", () => "");
         if (shiftHeadingLevelBy !== "") {
             args.push("--shift-heading-level-by");
@@ -558,6 +558,9 @@ class ProductionSetupModal extends Modal {
         }
         if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
             args.push("--include-in-header", this.composeResourcePath("publication", "pandoc", "templates", "packages.latex"));
+            if (true) {
+                args.push("--include-in-header", this.composeResourcePath("publication", "pandoc", "templates", "compact-structure.latex"));
+            }
         }
         if (configArgs.outputFormat === "beamer") {
             let slideLevel = this.resolveArgumentValue(configArgs, "defaultSlideLevel", "slide-level", "slideLevel", () => "2");
