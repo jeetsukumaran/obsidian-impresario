@@ -7,8 +7,10 @@
 
 % Reduce font size for titles
 \titleformat{\section}[block]{\normalfont\large\bfseries}{\thesection}{1em}{}
-\titleformat{\subsection}[block]{\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
-\titleformat{\subsubsection}[block]{\normalfont\small\bfseries}{\thesubsubsection}{1em}{}
+\titleformat{\subsection}[runin]{\normalfont\normalsize\bfseries\itshape}{\thesubsection}{2em}{}
+\titleformat{\subsubsection}[runin]{\normalfont\small\bfseries}{\thesubsubsection}{1em}{}
+\titleformat{\paragraph}[runin]{\normalfont\small\itshape}{\theparagraph}{1em}{}[:]
+\titleformat{\subparagraph}[runin]{\normalfont\small\bfseries\itshape}{\thesubparagraph}{1em}{}[:]
 
 % Reduce main title size and spacing
 \usepackage{titling}
