@@ -533,6 +533,15 @@ class ProductionSetupModal extends Modal {
                 }
             });
         }
+        const headerIncludes: string[] = this.readPropertyList("header-includes", []);
+        if (headerIncludes) {
+            headerIncludes.forEach((item: string) => {
+                item = item.trim();
+                if (item) {
+                    args.push(`--metadata=header-includes:${item}`);
+                }
+            });
+        }
         const shiftHeadingLevelBy = this.resolveArgumentValue(configArgs, "shiftHeadingLevelBy", "shift-heading-level-by", "shiftHeadingLevelBy", () => "");
         if (shiftHeadingLevelBy !== "") {
             args.push("--shift-heading-level-by");
