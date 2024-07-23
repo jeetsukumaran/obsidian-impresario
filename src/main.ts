@@ -522,6 +522,8 @@ class ProductionSetupModal extends Modal {
         if (configArgs.isSuppressBibliography) {
             args.push("-M");
             args.push("suppress-bibliography=true");
+            args.push("-M");
+            args.push("link-citations=false");
         }
         const includeInHeader: string[] = this.readPropertyList("include-in-header", []);
         if (includeInHeader) {
