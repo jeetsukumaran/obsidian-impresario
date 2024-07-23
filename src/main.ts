@@ -420,22 +420,30 @@ class ProductionSetupModal extends Modal {
         // runCommand(pandocCommandBibliographyOnly, outputSubpathBibliographyOnly);
     }
 
-    backgroundRun(isVerbose: boolean = false) {
+    backgroundRun(isSplitBibliography: boolean = false, isVerbose: boolean = false) {
         let outputFormat = this.defaultOutputFormat();
         let outputDirectory = this.defaultOutputDirectory();
         this.outputSubpath = this.composeOutputSubpath(
             outputFormat || "",
             outputDirectory || "",  // Changed from textContent to value
         );
-        this.execute(
-            "pandoc",
-            {
-                outputFormat: outputFormat,
-                outputSubpath: this.outputSubpath,
-                outputAbsolutePath: this.composeAbsolutePath(this.outputSubpath),
-                verbosity: isVerbose ? "true" : "",
-            },
-        );
+        if (isSplitBibliography) {
+            this.produceSplitBibliography(
+                isVerbose,
+                outputFormat,
+                outputDirectory,
+            )
+        } else {
+            this.execute(
+                "pandoc",
+                {
+                    outputFormat: outputFormat,
+                    outputSubpath: this.outputSubpath,
+                    outputAbsolutePath: this.composeAbsolutePath(this.outputSubpath),
+                    verbosity: isVerbose ? "true" : "",
+                },
+            );
+        }
     }
 
     composeResourcePath(...subpaths: string[]): string {
@@ -648,6 +656,7 @@ class Producer {
     produce(
         isOpenSetupModal: boolean,
         isAutoOpenOutput: boolean,
+        isSplitBibliography: boolean,
         isVerboseRun: boolean,
     ) {
         if (!this.activeFile.path.endsWith(".md")) {
@@ -665,7 +674,7 @@ class Producer {
         if (isOpenSetupModal) {
             productionSetupModal.open();
         } else {
-            productionSetupModal.backgroundRun(isVerboseRun);
+            productionSetupModal.backgroundRun(isSplitBibliography, isVerboseRun);
         }
     }
 }
@@ -790,6 +799,7 @@ export default class Impresario extends Plugin {
     produceActiveFile(
         isOpenSetupModal: boolean,
         isAutoOpenOutput: boolean,
+        isSplitBibliography: boolean,
         isVerboseRun: boolean,
     ) {
         if (!this.app.workspace) {
@@ -807,6 +817,7 @@ export default class Impresario extends Plugin {
         producer.produce(
             isOpenSetupModal,
             isAutoOpenOutput,
+            isSplitBibliography,
             isVerboseRun,
         );
     }
@@ -815,22 +826,27 @@ export default class Impresario extends Plugin {
         await this.loadSettings();
 
         this.addRibbonIcon("theater", "Produce!", () => {
-            this.produceActiveFile(true, false, false);
+            this.produceActiveFile(true, false, false, false);
         });
         this.addCommand({
             id: 'impresario-produce-default',
             name: 'Produce the active file',
-            callback: () => this.produceActiveFile(false, true, false), // arrow function for lexical closure
+            callback: () => this.produceActiveFile(false, true, false, false), // arrow function for lexical closure
         });
         this.addCommand({
             id: 'impresario-produce-default-background',
             name: 'Produce the active file in the background',
-            callback: () => this.produceActiveFile(false, false, false), // arrow function for lexical closure
+            callback: () => this.produceActiveFile(false, false, false, false), // arrow function for lexical closure
+        });
+        this.addCommand({
+            id: 'impresario-produce-default-background-split-bibliography',
+            name: 'Produce the active file in the background with separate bibliography',
+            callback: () => this.produceActiveFile(false, false, true, false), // arrow function for lexical closure
         });
         this.addCommand({
             id: 'impresario-produce-setup',
             name: 'Set up a production run for the active file',
-            callback: () => this.produceActiveFile(true, false, false), // arrow function for lexical closure
+            callback: () => this.produceActiveFile(true, false, false, false), // arrow function for lexical closure
         });
         this.addSettingTab(new ImpresarioSettingTab(this.app, this));
     }
