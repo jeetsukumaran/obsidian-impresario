@@ -553,6 +553,7 @@ class ProductionSetupModal extends Modal {
         //     });
         // }
         const shiftHeadingLevelBy = this.resolveArgumentValue(configArgs, "shiftHeadingLevelBy", "shift-heading-level-by", "shiftHeadingLevelBy", () => "");
+        const layout = this.resolveArgumentValue(configArgs, "layout", "layout", "layout", () => "");
         if (shiftHeadingLevelBy !== "") {
             args.push("--shift-heading-level-by");
             args.push(shiftHeadingLevelBy);
@@ -568,7 +569,7 @@ class ProductionSetupModal extends Modal {
         }
         if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
             args.push("--include-in-header", this.composeResourcePath("publication", "pandoc", "templates", "packages.latex"));
-            if (true) {
+            if (layout === "compact") {
                 args.push("--include-in-header", this.composeResourcePath("publication", "pandoc", "templates", "compact-structure.latex"));
             }
         }
