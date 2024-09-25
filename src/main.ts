@@ -236,7 +236,7 @@ class ProductionSetupModal extends Modal {
             "output-directory",
             "defaultOutputDirectory",
             "defaultOutputDirectoryPropertyName",
-            () => "products",
+            () => "artifacts",
         )
         return rval;
     }
