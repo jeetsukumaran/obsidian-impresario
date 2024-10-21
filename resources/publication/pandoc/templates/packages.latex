@@ -21,10 +21,43 @@
 \usepackage{makecell}
 \usepackage{bold-extra}
 
-\usepackage{framed}
 
-%% shaded blockquote
+\usepackage{xcolor}
+\usepackage{framed}
+\usepackage{changepage}
+\usepackage{mdframed}
+
+\colorlet{shadecolor}{gray!10}
+\definecolor{leftbarcolor}{RGB}{200,200,200}
+
 \let\oldquote=\quote
 \let\endoldquote=\endquote
-\colorlet{shadecolor}{gray!10}
-\renewenvironment{quote}{\begin{shaded*}\begin{oldquote}}{\end{oldquote}\end{shaded*}}
+
+\newlength{\quotebarwidth}
+\setlength{\quotebarwidth}{5pt}
+
+\newlength{\quotesep}
+\setlength{\quotesep}{.25em}
+
+\renewenvironment{quote}{%
+  \vspace{\quotesep}
+  \begin{adjustwidth}{2em}{2em}
+  \begin{mdframed}[
+    linewidth=\quotebarwidth,
+    linecolor=leftbarcolor,
+    topline=false,
+    rightline=false,
+    bottomline=false,
+    backgroundcolor=shadecolor
+  ]
+  \setlength{\leftmargini}{1em}
+  \begin{oldquote}
+}{%
+  \end{oldquote}
+  \end{mdframed}
+  \end{adjustwidth}
+  \vspace{\quotesep}
+}
+
+\BeforeBeginEnvironment{quote}{\par\noindent}
+\AfterEndEnvironment{quote}{\par\noindent}
