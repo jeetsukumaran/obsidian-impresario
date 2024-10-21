@@ -22,9 +22,8 @@
 \usepackage{bold-extra}
 
 \usepackage{framed}
-\usepackage{xcolor}
 
-
+%% shaded blockquote
 \let\oldquote=\quote
 \let\endoldquote=\endquote
 \colorlet{shadecolor}{gray!10}
