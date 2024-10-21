@@ -21,3 +21,11 @@
 \usepackage{makecell}
 \usepackage{bold-extra}
 
+\usepackage{framed}
+\usepackage{xcolor}
+
+
+\let\oldquote=\quote
+\let\endoldquote=\endquote
+\colorlet{shadecolor}{gray!10}
+\renewenvironment{quote}{\begin{shaded*}\begin{oldquote}}{\end{oldquote}\end{shaded*}}
