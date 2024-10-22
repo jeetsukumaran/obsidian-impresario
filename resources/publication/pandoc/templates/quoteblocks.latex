@@ -1,0 +1,73 @@
+\usepackage{xcolor}
+\usepackage{framed}
+\usepackage{changepage}
+\usepackage{mdframed}
+\colorlet{shadecolor}{gray!10}
+\definecolor{leftbarcolor}{RGB}{200,200,200}
+\let\oldquote=\quote
+\let\endoldquote=\endquote
+\newlength{\quotebarwidth}
+\setlength{\quotebarwidth}{5pt}
+\newlength{\quotesep}
+\setlength{\quotesep}{.25em}
+\renewenvironment{quote}{%
+  \vspace{\quotesep}
+  \begin{adjustwidth}{0em}{0em}
+  \begin{mdframed}[
+    % Frame settings
+    linewidth=\quotebarwidth,        % Default: 0.4pt
+    linecolor=leftbarcolor,          % Default: black
+    topline=false,                   % Default: true
+    rightline=false,                 % Default: true
+    bottomline=false,                % Default: true
+    leftline=true,                   % Default: true
+
+    % Background settings
+    backgroundcolor=shadecolor,      % Default: none
+
+    % Margin settings
+    innerleftmargin=5pt,            % Default: 5pt
+    innerrightmargin=5pt,           % Default: 5pt
+    innertopmargin=\baselineskip,   % Default: \baselineskip
+    innerbottommargin=\baselineskip,% Default: \baselineskip
+
+    % Spacing settings
+    skipabove=\baselineskip,        % Default: \baselineskip
+    skipbelow=\baselineskip,        % Default: \baselineskip
+
+    % Corner settings
+    roundcorner=0pt,                % Default: 0pt
+
+    % Shadow settings
+    shadow=false,                    % Default: false
+    shadowsize=2pt,                  % Default: 2pt
+    shadowcolor=black!50,           % Default: black!50
+
+    % Frame title settings
+    frametitle=none,                % Default: none
+    frametitleaboveskip=\baselineskip, % Default: \baselineskip
+    frametitlebelowskip=\baselineskip, % Default: \baselineskip
+    frametitlealignment=\raggedright,   % Default: \raggedright
+
+    % Advanced settings
+    middlelinewidth=0.4pt,          % Default: 0.4pt
+    middlelinecolor=black,          % Default: black
+    hidealllines=false,             % Default: false
+    leftmargin=0pt,                 % Default: 0pt
+    rightmargin=0pt,                % Default: 0pt
+
+    % Split settings
+    splitbottomskip=\baselineskip,  % Default: \baselineskip
+    splittopskip=\baselineskip      % Default: \baselineskip
+  ]
+  \setlength{\leftmargini}{0em}
+  \begin{oldquote}
+}{%
+  \end{oldquote}
+  \end{mdframed}
+  \end{adjustwidth}
+  \vspace{\quotesep}
+}
+\BeforeBeginEnvironment{quote}{\par\noindent}
+\AfterEndEnvironment{quote}{\par\noindent}
+

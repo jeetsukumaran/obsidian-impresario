@@ -568,7 +568,18 @@ class ProductionSetupModal extends Modal {
             ]);
         }
         if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
-            args.push("--include-in-header", this.composeResourcePath("publication", "pandoc", "templates", "packages.latex"));
+            args.push("--include-in-header", this.composeResourcePath(
+                "publication",
+                "pandoc",
+                "templates",
+                "packages.latex"
+            ));
+            args.push("--include-in-header", this.composeResourcePath(
+                "publication",
+                "pandoc",
+                "templates",
+                "quoteblocks.latex"
+            ));
             if (layout === "compact") {
                 args.push("--include-in-header", this.composeResourcePath("publication", "pandoc", "templates", "compact-structure.latex"));
             }
