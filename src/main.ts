@@ -500,6 +500,7 @@ class ProductionSetupModal extends Modal {
         ];
         if (true) {
             args.push(...[
+                "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "stripTagsFromHeaders.lua"),
                 "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "scratch.lua"),
                 "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "imageAttrs.lua"),
                 "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "citationlinks.lua"),
@@ -589,6 +590,7 @@ class ProductionSetupModal extends Modal {
             args.push("--slide-level", slideLevel);
             args.push("--include-in-header", this.composeResourcePath("publication", "pandoc", "templates", "beamer-preamble.tex"));
         }
+        // args.push("--pdf-engine", "xelatex")
         return args;
     }
 

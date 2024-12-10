@@ -3,7 +3,7 @@
 \usepackage{tikz}
 \usepackage{tikz-cd}
 
-\usepackage{isomath}
+% \usepackage{isomath}
 
 \usepackage{fontawesome}
 % \usepackage{tocloft} % breaks beamer at least
@@ -20,5 +20,5 @@
 \usepackage{booktabs}
 \usepackage{makecell}
 \usepackage{bold-extra}
-
+% \usepackage{fontspec}
 
