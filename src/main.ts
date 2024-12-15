@@ -933,7 +933,3 @@ export async function createDirectory(app: App, dirPath: string): Promise<TFolde
 
     return currentDir as TFolder;
 }
-
-//
-//
-//
