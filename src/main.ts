@@ -484,7 +484,7 @@ class ProductionSetupModal extends Modal {
             "auto_identifiers",
             "strikeout",
             "yaml_metadata_block",
-            "implicit_figures",
+            // "implicit_figures",
             "smart",
             "fenced_divs",
             "citations",

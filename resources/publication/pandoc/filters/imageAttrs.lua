@@ -26,9 +26,17 @@ function Image(elem)
     return elem
 end
 
+-- function Figure(elem)
+--     -- Extract and return the contained image directly, removing the wrapper
+--     if #elem.content == 1 and elem.content[1].t == "Image" then
+--         return elem.content[1]
+--     end
+--     return elem
+-- end
+
 return {
     {
-        Image = Image
+        Image = Image,
         -- Figure = Figure
     }
 }
