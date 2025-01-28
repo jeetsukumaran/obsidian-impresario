@@ -77,6 +77,19 @@ production-reference-data:
 
 Currently focusing on developing only PDF's (articles etc.), Beamer presentations (PDF), and HTML presentations (reveal.js etc.).
 
+### Embedded SVG image support
+
+#### Requirements
+
+- ``[Sphinx SVG to PDF Converter Extension](https://github.com/missinglinkelectronics/sphinxcontrib-svg2pdfconverter)``:
+
+   ```
+   $ pip install sphinxcontrib-svg2pdfconverter
+   ```
+
+
+#### Requirements
+
 ### Mermaid codeblocks rendered
 
 Mermaid code blocks in your slides/documents will be rendered.
@@ -84,7 +97,7 @@ Mermaid code blocks in your slides/documents will be rendered.
 
 #### Requirements
 
-- ``mermaid-filter`` [[https://github.com/raghur/mermaid-filter]]:
+- ``[mermaid-filter](https://github.com/raghur/mermaid-filter)``:
 
    ```
    npm install --global mermaid-filter
