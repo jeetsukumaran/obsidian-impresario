@@ -8,6 +8,29 @@ Simple Pandoc wrapper that sends your Obsidian notes to the show.
 
 ## Features
 
+### Pandoc processing of Obsidian (wikilink) citations!
+
+The following formats are native Pandoc and are processed correctly:
+
+- ``[@shannon-1948-mathematical-theory]``
+- ``[@{shannon-1948-mathematical-theory}]``
+
+These are "dead" text in Obsidian however, and in a typical note/document, I would like to augment the citation with links to the reference:
+
+- ``[[@shannon-1948-mathematical-theory]]``
+- ``[[references/s/@shannon-1948-mathematical-theory|@shannon-1948-mathematical-theory]]``
+- ``[[some/path/and/filename|@shannon-1948-mathematical-theory]]``
+- ``[[references/s/@shannon-1948-mathematical-theory]]``
+
+However, the above will not be processed correctly by the default Pandoc.
+The citations themselves are recognized and processed, but the link syntax cruft remains.
+In combination with the built-in "`wikilinks_title_after_pipe`" extension and a bundled lua filter, this plugin solves the problem. 😊
+
+Specifying a Pandoc citation token, which is a "@" character followed by the citekey ("`@cite-key`") as the title or display for an Obsidian internal link will result in the link markup elements being stripped and the citekey processed as a regular Pandoc citation.
+
+> [!note]
+> I now use [[https://github.com/mgmeyers/obsidian-pandoc-reference-list|Obsidian Pandoc Reference List]] which resolves the issue much better, as I can use the full range of native Pandoc citation styles, and this Pandoc Reference List plugin will automatically create links to the reference notes "dynamically" in both editing as well as reading view.
+
 ### Slide level processed from YAML frontmatter
 
 I recognize that the slide level is not metadata and does not belong here.
@@ -54,25 +77,42 @@ production-reference-data:
 
 Currently focusing on developing only PDF's (articles etc.), Beamer presentations (PDF), and HTML presentations (reveal.js etc.).
 
-### Pandoc processing of Obsidian (wikilink) citations!
+### Mermaid codeblocks rendered
 
-The following formats are native Pandoc and are processed correctly:
+Mermaid code blocks in your slides/documents will be rendered.
 
-- ``[@shannon-1948-mathematical-theory]``
-- ``[@{shannon-1948-mathematical-theory}]``
 
-These are "dead" text in Obsidian however, and in a typical note/document, I would like to augment the citation with links to the reference:
+#### Requirements
 
-- ``[[@shannon-1948-mathematical-theory]]``
-- ``[[references/s/@shannon-1948-mathematical-theory|@shannon-1948-mathematical-theory]]``
-- ``[[some/path/and/filename|@shannon-1948-mathematical-theory]]``
-- ``[[references/s/@shannon-1948-mathematical-theory]]``
+- ``mermaid-filter`` [[https://github.com/raghur/mermaid-filter]]:
 
-However, the above will not be processed correctly by the default Pandoc.
-The citations themselves are recognized and processed, but the link syntax cruft remains.
-In combination with the built-in "`wikilinks_title_after_pipe`" extension and a bundled lua filter, this plugin solves the problem. 😊
+   ```
+   npm install --global mermaid-filter
+   ```
 
-Specifying a Pandoc citation token, which is a "@" character followed by the citekey ("`@cite-key`") as the title or display for an Obsidian internal link will result in the link markup elements being stripped and the citekey processed as a regular Pandoc citation.
+### TikZ codeblocks rendered
+
+TikZ code blocks in your slides/documents will be rendered.
+
+### Obsidian callouts rendered
+
+Callouts in your slides/documents will be rendered.
+
+### Image width through image attributes
+
+```
+
+## Slide 2
+
+![path/to/image.jpg|200] \
+
+```
+
+### A"Scratch" space
+
+
+A special heading lets you keep text that you do not want rendered but want to maintain together in the document; useful for, e.g. background notes, sections/slides in progress, scraps, etc.
+
 
 ## Development State
 
