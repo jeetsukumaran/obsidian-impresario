@@ -80,15 +80,10 @@ function Image(img)
 
         if success then
             -- Read the generated SVG
-            if file_exists(temp_svg) then
-                io.stderr:write(string.format("Output SVG file found: %s\n", temp_svg))
-            else
+            if not file_exists(temp_svg) then
                 io.stderr:write(string.format("Warning: Output SVG file not found: %s\n", temp_svg))
-            end
-
-            local svg_file = io.open(temp_svg, "r")
-            if svg_file then
-                svg_file:close()  -- We don't need to read the content, just verify it exists
+            else
+                io.stderr:write(string.format("Output SVG file found: %s\n", temp_svg))
 
                 -- Update the image source
                 img.src = temp_svg
@@ -103,8 +98,8 @@ function Image(img)
                 os.execute(string.format('rm -f "%s" > /dev/null 2>&1', temp_svg))
 
                 return img
-            else
-                io.stderr:write(string.format("Warning: Could not read generated SVG file: %s\n", temp_svg))
+            -- else
+            --     io.stderr:write(string.format("Warning: Could not read generated SVG file: %s\n", temp_svg))
             end
         else
             io.stderr:write(string.format("Warning: Failed to convert Draw.io file: %s\n", input_file))
