@@ -94,9 +94,6 @@ function Image(img)
                     img.attributes["includegraphics"] = "true"
                 end
 
-                -- Clean up the temporary file when done
-                os.execute(string.format('rm -f "%s" > /dev/null 2>&1', temp_svg))
-
                 return img
             -- else
             --     io.stderr:write(string.format("Warning: Could not read generated SVG file: %s\n", temp_svg))
