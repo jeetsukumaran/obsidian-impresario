@@ -77,7 +77,7 @@ production-reference-data:
 
 Currently focusing on developing only PDF's (articles etc.), Beamer presentations (PDF), and HTML presentations (reveal.js etc.).
 
-### Embedded SVG image support
+### Embedded SVG images rendered
 
 #### Requirements
 
@@ -87,8 +87,11 @@ Currently focusing on developing only PDF's (articles etc.), Beamer presentation
    $ pip install sphinxcontrib-svg2pdfconverter
    ```
 
+### Embedded ``[draw.io](https://www.drawio.com/) rendered``
 
 #### Requirements
+
+Installation of ``[drawi.io desktop](https://www.drawio.com/blog/diagrams-offline)``
 
 ### Mermaid codeblocks rendered
 
