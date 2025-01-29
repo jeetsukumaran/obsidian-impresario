@@ -2,105 +2,66 @@
 -- Pandoc Lua filter to convert embedded Draw.io diagrams to SVG
 -- Requires: draw.io CLI (drawio) to be installed and accessible in PATH
 
--- Get the current working directory at filter startup
-local initial_dir = pandoc.system.get_working_directory()
+local function get_temp_svg_path(input_filename)
+    local temp_dir = os.getenv("TMPDIR") or "/tmp"
+    -- Generate unique temp filename while preserving original name for debugging
+    local base_name = input_filename:gsub("%.drawio$", "")
+    return temp_dir .. "/drawio_" .. os.tmpname():match("[^/]+$") .. "_" .. base_name .. ".svg"
+end
 
 function Image(img)
     -- Check if this is a drawio image
     if img.src:match("%.drawio$") then
-        -- Get absolute path for the input file
+        -- Get absolute path to input file, keeping vault directory structure
         local input_file = img.src
-        if not input_file:match("^/") then
-            -- If relative path, make it absolute using the resource path
-            input_file = pandoc.path.join({initial_dir, input_file})
-        end
+        -- if not input_file:match("^/") then
+        --     -- If relative path, make it absolute using current directory
+        --     input_file = pandoc.path.join({pandoc.system.get_working_directory(), input_file})
+        -- end
 
-        -- Use Pandoc's temporary directory for output
-        return pandoc.system.with_temporary_directory("drawio", function()
-            -- Create output filename in the temp directory
-            -- local temp_svg = pandoc.path.join({pandoc.system.get_working_directory(),
-            --                                  pandoc.path.filename(img.src):gsub("%.drawio$", ".svg")})
-            local temp_svg = pandoc.path.join({
-                pandoc.system.get_working_directory(),
-                pandoc.path.filename(img.src):gsub("%.drawio$", "") .. ".svg"
-            })
+        -- Create temporary SVG path outside the vault
+        local temp_svg = get_temp_svg_path(pandoc.path.filename(input_file))
 
-            -- Construct the draw.io CLI command
-            local cmd = string.format(
-                'drawio --export --format svg --output "%s" "%s"',
-                temp_svg,
-                input_file
-            )
+        -- Construct the draw.io CLI command
+        local cmd = string.format(
+            'drawio --export --format svg --output "%s" "%s"',
+            temp_svg,
+            input_file
+        )
 
-            io.stderr:write(string.format("Executing:\n\n%s\n\n", cmd))
-            io.stderr:write(string.format("Source: %s\n", input_file))
-            io.stderr:write(string.format("Output: %s\n", temp_svg))
+        io.stderr:write(string.format("Executing:\n\n%s\n\n", cmd))
+        -- io.stderr:write(string.format("Converting: %s\n", img.src))
 
-            -- Execute the conversion
-            local success = os.execute(cmd)
+        -- Execute the conversion
+        local success = os.execute(cmd)
 
-            if success then
-                -- Read the generated SVG
-                local svg_file = io.open(temp_svg, "r")
-                if svg_file then
-                    svg_file:close()  -- We don't need to read the content, just verify it exists
+        if success then
+            -- Read the generated SVG
+            local svg_file = io.open(temp_svg, "r")
+            if svg_file then
+                svg_file:close()  -- We don't need to read the content, just verify it exists
 
-                    -- Update the image source
-                    img.src = temp_svg
+                -- Update the image source
+                img.src = temp_svg
 
-                    -- Special handling for LaTeX
-                    if FORMAT:match("latex") then
-                        -- Add includegraphics attribute for SVG in LaTeX
-                        img.attributes["includegraphics"] = "true"
-                    end
-
-                    return img
-                else
-                    io.stderr:write(string.format("Warning: Could not read generated SVG file: %s\n", temp_svg))
+                -- Special handling for LaTeX
+                if FORMAT:match("latex") then
+                    -- Add includegraphics attribute for SVG in LaTeX
+                    img.attributes["includegraphics"] = "true"
                 end
+
+                -- Clean up the temporary file when done
+                os.execute(string.format('rm -f "%s" > /dev/null 2>&1', temp_svg))
+
+                return img
             else
-                io.stderr:write(string.format("Warning: Failed to convert Draw.io file: %s\n", input_file))
+                io.stderr:write(string.format("Warning: Could not read generated SVG file: %s\n", temp_svg))
             end
-
-            -- Return unchanged image if conversion failed
-            return img
-        end)
+        else
+            io.stderr:write(string.format("Warning: Failed to convert Draw.io file: %s\n", input_file))
+        end
     end
 
-    -- Return unchanged image if not a drawio file
+    -- Return unchanged image if not a drawio file or if conversion failed
     return img
-end
-
--- Function to verify paths exist
-function verify_path(path)
-    local file = io.open(path, "r")
-    if file then
-        file:close()
-        return true
-    end
-    return false
-end
-
--- Test if draw.io is available and working directory is accessible
-function Meta(meta)
-    -- Check drawio installation
-    local handle = io.popen("which drawio")
-    local result = handle:read("*a")
-    handle:close()
-
-    if result == "" then
-        io.stderr:write([[
-Warning: draw.io CLI not found in PATH.
-Please install draw.io CLI to use this filter.
-Installation instructions:
-- Linux: sudo snap install drawio
-- macOS: brew install drawio
-- Windows: Install Draw.io Desktop and ensure it's in PATH
-]])
-    end
-
-    -- Add working directory info to metadata
-    meta.drawio_working_dir = initial_dir
-
-    return meta
 end
