@@ -500,6 +500,7 @@ class ProductionSetupModal extends Modal {
         ];
         if (true) {
             args.push(...[
+                "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "drawio.lua"),
                 "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "stripTagsFromHeaders.lua"),
                 "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "scratch.lua"),
                 "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "imageAttrs.lua"),
