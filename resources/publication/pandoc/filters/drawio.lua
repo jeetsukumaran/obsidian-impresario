@@ -9,15 +9,15 @@ local function get_temp_svg_path(input_filename)
     return temp_dir .. "/drawio_" .. os.tmpname():match("[^/]+$") .. "_" .. base_name .. ".svg"
 end
 
+function file_exists(path)
+    local f = io.open(path, "r")
+    if f then f:close() return true end
+    return false
+end
+
 
 function resolve_pandoc_resource(rel_path)
     -- Function to check if a file exists
-    local function file_exists(path)
-        local f = io.open(path, "r")
-        if f then f:close() return true end
-        return false
-    end
-
     -- Get resource paths from Pandoc's options
     -- local resource_paths = pandoc.system.get_option("resource-path") or {}
     local resource_paths = PANDOC_STATE.resource_path
@@ -26,9 +26,9 @@ function resolve_pandoc_resource(rel_path)
     if type(resource_paths) == "string" then
         resource_paths = { resource_paths }
     end
-    print("\n\n***\n\n")
-    print(resource_paths)
-    print("\n\n***\n\n")
+    -- print("\n\n***\n\n")
+    -- print(resource_paths)
+    -- print("\n\n***\n\n")
 
     -- Search for the file in the current working directory and resource paths
     local search_dirs = { ".", table.unpack(resource_paths) }
@@ -80,6 +80,12 @@ function Image(img)
 
         if success then
             -- Read the generated SVG
+            if file_exists(temp_svg) then
+                io.stderr:write(string.format("Output SVG file found: %s\n", temp_svg))
+            else
+                io.stderr:write(string.format("Warning: Output SVG file not found: %s\n", temp_svg))
+            end
+
             local svg_file = io.open(temp_svg, "r")
             if svg_file then
                 svg_file:close()  -- We don't need to read the content, just verify it exists
