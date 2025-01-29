@@ -1,7 +1,7 @@
 function Image(img)
     -- Check if this is a drawio image
     if img.src:match("%.drawio$") then
-        -- Create temporary file paths using a more reliable method
+        -- Create temporary file paths
         local temp_dir = os.getenv("TMPDIR") or "/tmp"
         local temp_name = string.format("%s/drawio_%d.svg",
             temp_dir,
@@ -22,21 +22,13 @@ function Image(img)
         local success = os.execute(cmd)
 
         if success then
-            -- Read the generated SVG
-            local svg_file = io.open(temp_name, "r")
-            if svg_file then
-                local svg_content = svg_file:read("*all")
-                svg_file:close()
-                os.remove(temp_name)
-
-                -- Update the image attributes
-                img.src = temp_name
-                img.mime_type = "image/svg+xml"
-
-                return img
-            else
-                io.stderr:write(string.format("Error: Could not read SVG file: %s\n", temp_name))
-            end
+            -- Create new image with SVG attributes
+            return pandoc.Image(
+                img.caption,
+                temp_name,
+                img.title,
+                img.attr
+            )
         else
             io.stderr:write(string.format("Error: Failed to convert Draw.io file: %s\n", img.src))
         end
