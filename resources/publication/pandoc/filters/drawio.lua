@@ -9,7 +9,7 @@ local function parse_output_format(elem)
     for part in string.gmatch(captionStr, "[^|]+") do
         table.insert(parts, string.match(part, "^%s*(.-)%s*$")) -- Trim whitespace
     end
-    return "svg"
+    return "pdf"
     -- local output_format = nil
     -- if #parts > 0 then
     --     width, height = parts[#parts]:match("^(%d+)%s*x?%s*(%d*)$")
@@ -33,11 +33,11 @@ local function parse_output_format(elem)
     -- end
 end
 
-local function get_rendered_image_path(input_filename)
+local function get_rendered_image_path(input_filename, output_format)
     local temp_dir = os.getenv("TMPDIR") or "/tmp"
     -- Generate unique temp filename while preserving original name for debugging
     local base_name = input_filename:gsub("%.drawio$", "")
-    return temp_dir .. "/drawio_" .. os.tmpname():match("[^/]+$") .. "_" .. base_name .. ".svg"
+    return temp_dir .. "/drawio_" .. os.tmpname():match("[^/]+$") .. "_" .. base_name .. "." .. output_format
 end
 
 function file_exists(path)
@@ -93,7 +93,7 @@ function Image(img)
         end
 
         -- Create temporary SVG path outside the vault
-        local rendered_image = get_rendered_image_path(pandoc.path.filename(input_file))
+        local rendered_image = get_rendered_image_path(pandoc.path.filename(input_file), output_format)
 
         -- Construct the draw.io CLI command
         local cmd = string.format(
