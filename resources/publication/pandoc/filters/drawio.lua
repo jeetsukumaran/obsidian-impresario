@@ -9,7 +9,7 @@ local function parse_output_format(elem)
     for part in string.gmatch(captionStr, "[^|]+") do
         table.insert(parts, string.match(part, "^%s*(.-)%s*$")) -- Trim whitespace
     end
-    return "svg"
+    return "png"
     -- local output_format = nil
     -- if #parts > 0 then
     --     width, height = parts[#parts]:match("^(%d+)%s*x?%s*(%d*)$")
