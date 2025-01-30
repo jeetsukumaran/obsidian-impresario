@@ -1,8 +1,39 @@
--- drawio2svg.lua
 -- Pandoc Lua filter to convert embedded Draw.io diagrams to SVG
 -- Requires: draw.io CLI (drawio) to be installed and accessible in PATH
+--
+--
 
-local function get_temp_svg_path(input_filename)
+local function parse_output_format(elem)
+    local captionStr = pandoc.utils.stringify(elem.caption)
+    local parts = {}
+    for part in string.gmatch(captionStr, "[^|]+") do
+        table.insert(parts, string.match(part, "^%s*(.-)%s*$")) -- Trim whitespace
+    end
+    return "svg"
+    -- local output_format = nil
+    -- if #parts > 0 then
+    --     width, height = parts[#parts]:match("^(%d+)%s*x?%s*(%d*)$")
+    --     if width then
+    --         table.remove(parts, #parts)
+    --     end
+    -- end
+
+    -- local width, height = nil, nil
+    -- if #parts > 0 then
+    --     width, height = parts[#parts]:match("^(%d+)%s*x?%s*(%d*)$")
+    --     if width then
+    --         table.remove(parts, #parts)
+    --     end
+    -- end
+    -- if width then
+    --     elem.attributes.width = width .. "px"
+    --     if height and height ~= "" then
+    --         elem.attributes.height = height .. "px"
+    --     end
+    -- end
+end
+
+local function get_rendered_image_path(input_filename)
     local temp_dir = os.getenv("TMPDIR") or "/tmp"
     -- Generate unique temp filename while preserving original name for debugging
     local base_name = input_filename:gsub("%.drawio$", "")
@@ -48,6 +79,7 @@ function Image(img)
     if img.src:match("%.drawio$") then
         -- Get absolute path to input file, keeping vault directory structure
         local input_file = img.src
+        local output_format = parse_output_format(img)
         if not input_file:match("^/") then
             -- If relative path,
             -- search through the following directories as parent directories for the path, in order, until an existing file is found and then return then absolute path;
@@ -58,16 +90,16 @@ function Image(img)
             -- - (current working directory)
             -- - each of pandoc's --resource-path or -resource-path arguments
             input_file = resolve_pandoc_resource(input_file)
-
         end
 
         -- Create temporary SVG path outside the vault
-        local temp_svg = get_temp_svg_path(pandoc.path.filename(input_file))
+        local rendered_image = get_rendered_image_path(pandoc.path.filename(input_file))
 
         -- Construct the draw.io CLI command
         local cmd = string.format(
-            'drawio --export --format svg --output "%s" "%s"',
-            temp_svg,
+            'drawio --export --format %s --output "%s" "%s"',
+            output_format,
+            rendered_image,
             input_file
         )
 
@@ -79,14 +111,13 @@ function Image(img)
         local success = os.execute(cmd)
 
         if success then
-            -- Read the generated SVG
-            if not file_exists(temp_svg) then
-                io.stderr:write(string.format("Warning: Output SVG file not found: %s\n", temp_svg))
+            if not file_exists(rendered_image) then
+                io.stderr:write(string.format("Warning: Rendered file not found: %s\n", rendered_image))
             else
-                io.stderr:write(string.format("Output SVG file found: %s\n", temp_svg))
+                io.stderr:write(string.format("Rendered file found: %s\n", rendered_image))
 
                 -- Update the image source
-                img.src = temp_svg
+                img.src = rendered_image
 
                 -- Special handling for LaTeX
                 if FORMAT:match("latex") then
@@ -96,7 +127,7 @@ function Image(img)
 
                 return img
             -- else
-            --     io.stderr:write(string.format("Warning: Could not read generated SVG file: %s\n", temp_svg))
+            --     io.stderr:write(string.format("Warning: Could not read generated SVG file: %s\n", rendered_image))
             end
         else
             io.stderr:write(string.format("Warning: Failed to convert Draw.io file: %s\n", input_file))
