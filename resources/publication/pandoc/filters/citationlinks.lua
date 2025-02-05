@@ -1,6 +1,6 @@
 
 function Encite(citekey)
-	local citation = pandoc.Citation(citekey, 'AuthorInText')
+	local citation = pandoc.Citation(citekey, 'NormalCitation')
 	return pandoc.Cite({pandoc.Str(citekey)}, {citation})
 end
 
