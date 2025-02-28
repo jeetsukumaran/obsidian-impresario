@@ -14,14 +14,19 @@ import {
     TFile,
     TFolder,
     TAbstractFile,
+    normalizePath,
 } from 'obsidian';
 import {
-    exportRenderedMarkdownToFile,
-    // generateRenderedMarkdown,
+    BakeSettings,
+    EasyBakeApi,
 } from "./easybake";
 import { spawn, exec } from "child_process";
 import * as path from "path";
 import * as os from 'os';
+import * as fs from "fs";
+import { writeFile, unlink } from 'fs/promises';
+import { tmpdir } from 'os';
+import { join } from 'path';
 
 interface ImpresarioSettings {
     configuration: { [key: string]: string };
@@ -47,6 +52,15 @@ class ProductionParameter {
     label = "Parameter"
     value: string | number
 }
+
+const fileExists = (filePath: string, app: App): boolean => {
+    if (path.isAbsolute(filePath)) {
+        return fs.existsSync(filePath);
+    } else {
+        return app.vault.getAbstractFileByPath(filePath) !== null;
+    }
+};
+
 
 class ProductionSetupModal extends Modal {
 
@@ -372,56 +386,6 @@ class ProductionSetupModal extends Modal {
             },
         );
 
-        // const pandocCommandWithoutBibliography = [
-        //     "pandoc",
-        //     "--standalone",
-        //     "--resource-path", this.vaultRootPath,
-        //     this.sourceFileAbsolutePath,
-        //     "-o", outputSubpathWithoutBibliography,
-        //     "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "scratch.lua"),
-        //     "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "imageAttrs.lua"),
-        //     "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "citationlinks.lua"),
-        //     "--filter", this.composeResourcePath("publication", "pandoc", "filters", "tikzblock.py"),
-        // ];
-
-        // const pandocCommandBibliographyOnly = [
-        //     "pandoc",
-        //     "--standalone",
-        //     "--bibliography", this.resolveArgumentValue({}, "defaultBibliographyPath", "bibliographic-database-path", "bibliographyPath", () => ""),
-        //     "-o", outputSubpathBibliographyOnly
-        // ];
-
-        // if (isVerbose) {
-        //     pandocCommandWithoutBibliography.push("--verbose");
-        //     pandocCommandBibliographyOnly.push("--verbose");
-        // }
-
-        // const runCommand = (command: string[], description: string) => {
-        //     const modal = new OutputModal(this.app, command.join(" "), description, this.isAutoOpenOutput, this.isAutoClose);
-        //     modal.open();
-        //     try {
-        //         ensureParentDirectoryExists(this.app, description).then(() => {
-        //             const process = spawn(command[0], command.slice(1), { cwd: os.tmpdir() });
-        //             modal.setMessage("Starting production run for " + description);
-        //             modal.registerStartedProcess();
-        //             process.stdout?.on('data', (data) => modal.appendOutput(data.toString()));
-        //             process.stderr?.on('data', (data) => modal.appendError(data.toString()));
-        //             process.on('close', (code) => {
-        //                 if (code === 0) {
-        //                     modal.setMessage(`Document successfully produced: '${description}'`);
-        //                 } else {
-        //                     modal.setMessage(`Document production failed with code: ${code}`);
-        //                 }
-        //                 modal.registerClosedProcess();
-        //             });
-        //         }).catch();
-        //     } catch (err) {
-        //         modal.appendMessage(`Failed to produce document: ${err}`);
-        //     }
-        // };
-
-        // runCommand(pandocCommandWithoutBibliography, outputSubpathWithoutBibliography);
-        // runCommand(pandocCommandBibliographyOnly, outputSubpathBibliographyOnly);
     }
 
     async backgroundRun(isSplitBibliography: boolean = false, isVerbose: boolean = false) {
@@ -520,13 +484,18 @@ class ProductionSetupModal extends Modal {
             args.push("-M");
             args.push("title=References");
         }
-        const extractPath = (item: string) => item?.trim().replace(/^\[\[/g, "").replace(/\]\]$/g, "");
+        const extractPath = (item: string) => normalizePath(item?.trim().replace(/^\[\[/g, "").replace(/\]\]$/g, ""));
         if (true) {
             args.push("--citeproc");
             const bibliographyDataPaths: string[] = [];
             let customBibPath = this.resolveArgumentValue(configArgs, "defaultBibliographyPath", "bibliographic-database-path", "bibliographyPath", () => "");
             if (customBibPath) {
-                bibliographyDataPaths.push(extractPath(customBibPath));
+                const extractedPath = extractPath(customBibPath);
+                if (fileExists(extractedPath, this.app)) {
+                    bibliographyDataPaths.push(extractedPath);
+                } else {
+                    console.warn(`Not adding non-existing bibliography file '${extractedPath}`);
+                }
             }
             bibliographyDataPaths.push(...this.readPropertyList("bibliography").map(extractPath));
             bibliographyDataPaths.forEach((bdPath) => args.push(...["--bibliography", bdPath]));
@@ -599,61 +568,146 @@ class ProductionSetupModal extends Modal {
         return args;
     }
 
+    // async execute(
+    //     commandPath: string,
+    //     configArgs: { [key: string]: string }
+    // ) {
+
+    //     let pandocSourceFilePath = this.sourceFilePath;
+    //     const bakedFilePath = "test1.md"
+    //     const easyBakeApi = new EasyBakeApi(app);
+    //     const bakeSettings = {
+    //         bakeLinks: true,
+    //         bakeEmbeds: true,
+    //         bakeInList: true,
+    //         convertFileLinks: true,
+    //     };
+    //     const compiledSourceData = await easyBakeApi.bakeToString(this.sourceFilePath, bakeSettings);
+
+    //     const commandArgs = this.composeArgs(
+    //         pandocSourceFilePath,
+    //         configArgs,
+    //     );
+    //     const formattedCommand = commandPath + " " + commandArgs.join(" ");
+    //     const outputAbsolutePath = configArgs.outputAbsolutePath;
+    //     const modal = new OutputModal(
+    //         app,
+    //         formattedCommand,
+    //         configArgs.outputSubpath,
+    //         this.isAutoOpenOutput,
+    //         this.isAutoClose,
+    //     );
+    //     try {
+    //         modal.open();
+    //         ensureParentDirectoryExists(this.app, this.outputSubpath)
+    //             .then(() => {
+    //                 const process = spawn(commandPath, commandArgs, { cwd: os.tmpdir() });
+    //                 modal.setMessage("Starting production run");
+    //                 modal.registerStartedProcess();
+    //                 process.stdout?.on('data', (data) => {
+    //                     modal.appendOutput(data);
+    //                 });
+    //                 process.stderr?.on('data', (data) => {
+    //                     modal.appendError(data);
+    //                 });
+    //                 process.on('close', (code) => {
+    //                     if (code === 0) {
+    //                         modal.setMessage(`Document successfully produced: '${outputAbsolutePath}'`);
+    //                     } else {
+    //                         modal.setMessage(`Document production failed with code: ${code}`);
+    //                     }
+    //                     modal.registerClosedProcess();
+    //                 });
+    //             })
+    //             .catch();
+    //     } catch (err) {
+    //         modal.appendMessage(`Failed to produce document: ${err}`);
+    //     }
+    // }
+
     async execute(
         commandPath: string,
         configArgs: { [key: string]: string }
     ) {
-
         let pandocSourceFilePath = this.sourceFilePath;
-        // const bakedFilePath = "test1.md"
-        // const result = await exportRenderedMarkdownToFile(
-        //     this.app,
-        //     this.sourceFilePath,
-        //     bakedFilePath,
-        // );
-        // if (result) {
-        //     pandocSourceFilePath = bakedFilePath;
-        // }
-        const commandArgs = this.composeArgs(
-            pandocSourceFilePath,
-            configArgs,
-        );
-        const formattedCommand = commandPath + " " + commandArgs.join(" ");
+        const easyBakeApi = new EasyBakeApi(app);
+        const bakeSettings = {
+            bakeLinks: true,
+            bakeEmbeds: true,
+            bakeInList: true,
+            convertFileLinks: true,
+        };
+        const compiledSourceData = await easyBakeApi.bakeToString(this.sourceFilePath, bakeSettings);
+
+        let tempFilePath: string | null = null;
+
+        if (compiledSourceData?.trim()) {
+            try {
+                tempFilePath = join(tmpdir(), `pandoc_temp_${Date.now()}.md`);
+                await writeFile(tempFilePath, compiledSourceData, 'utf8');
+                pandocSourceFilePath = tempFilePath;
+            } catch (error) {
+                console.error("Failed to create temporary file:", error);
+                return;
+            }
+        }
+
+        const commandArgs = this.composeArgs(pandocSourceFilePath, configArgs);
+        const formattedCommand = `${commandPath} ${commandArgs.join(" ")}`;
         const outputAbsolutePath = configArgs.outputAbsolutePath;
         const modal = new OutputModal(
             app,
             formattedCommand,
             configArgs.outputSubpath,
             this.isAutoOpenOutput,
-            this.isAutoClose,
+            this.isAutoClose
         );
+
         try {
             modal.open();
-            ensureParentDirectoryExists(this.app, this.outputSubpath)
-                .then(() => {
-                    const process = spawn(commandPath, commandArgs, { cwd: os.tmpdir() });
-                    modal.setMessage("Starting production run");
-                    modal.registerStartedProcess();
-                    process.stdout?.on('data', (data) => {
-                        modal.appendOutput(data);
-                    });
-                    process.stderr?.on('data', (data) => {
-                        modal.appendError(data);
-                    });
-                    process.on('close', (code) => {
-                        if (code === 0) {
-                            modal.setMessage(`Document successfully produced: '${outputAbsolutePath}'`);
-                        } else {
-                            modal.setMessage(`Document production failed with code: ${code}`);
+            await ensureParentDirectoryExists(this.app, this.outputSubpath);
+
+            const process = spawn(commandPath, commandArgs, { cwd: tmpdir() });
+            modal.setMessage("Starting production run");
+            modal.registerStartedProcess();
+
+            process.stdout?.on('data', (data) => {
+                modal.appendOutput(data);
+            });
+
+            process.stderr?.on('data', (data) => {
+                modal.appendError(data);
+            });
+
+            process.on('close', async (code) => {
+                if (code === 0) {
+                    modal.setMessage(`Document successfully produced: '${outputAbsolutePath}'`);
+                    if (tempFilePath) {
+                        try {
+                            await unlink(tempFilePath);
+                        } catch (err) {
+                            console.error("Failed to delete temporary file:", tempFilePath, err);
                         }
-                        modal.registerClosedProcess();
-                    });
-                })
-                .catch();
+                    }
+                } else {
+                    modal.setMessage(`Document production failed with code: ${code}`);
+                    if (tempFilePath) {
+                        console.error("Temporary file retained:", tempFilePath);
+                    }
+                }
+                modal.registerClosedProcess();
+            });
         } catch (err) {
             modal.appendMessage(`Failed to produce document: ${err}`);
+            if (tempFilePath) {
+                console.error("Temporary file retained:", tempFilePath);
+            }
         }
     }
+
+
+
+
 }
 
 class Producer {
@@ -882,19 +936,6 @@ export default class Impresario extends Plugin {
             callback: () => this.produceActiveFile(true, false, false, false), // arrow function for lexical closure
         });
         this.addSettingTab(new ImpresarioSettingTab(this.app, this));
-
-
-
-        this.addRibbonIcon("worm", "test!", () => {
-                const easyBakePlugin = (this.app as any).plugins.getPlugin("easy-bake");
-                console.log(easyBakePlugin);
-                if (!easyBakePlugin) {
-                    console.error("obsidian-easy-bake is not installed or enabled.");
-                } else {
-                    console.log("obsidian-easy-bake OK.");
-                }
-        });
-
     }
 
     onunload() {

@@ -29,7 +29,17 @@ In combination with the built-in "`wikilinks_title_after_pipe`" extension and a 
 Specifying a Pandoc citation token, which is a "@" character followed by the citekey ("`@cite-key`") as the title or display for an Obsidian internal link will result in the link markup elements being stripped and the citekey processed as a regular Pandoc citation.
 
 > [!note]
-> I now use [[https://github.com/mgmeyers/obsidian-pandoc-reference-list|Obsidian Pandoc Reference List]] which resolves the issue much better, as I can use the full range of native Pandoc citation styles, and this Pandoc Reference List plugin will automatically create links to the reference notes "dynamically" in both editing as well as reading view.
+> I now use [Obsidian Pandoc Reference List](https://github.com/mgmeyers/obsidian-pandoc-reference-list) which resolves the issue much better, as I can use the full range of native Pandoc citation styles, and this Pandoc Reference List plugin will automatically create links to the reference notes "dynamically" in both editing as well as reading view.
+> In other words, for references I use pandoc-native `[@citekey]` throughout my notes, so they are all rendered nicely by pandoc, and I rely on [Obsidian Pandoc Reference List](https://github.com/mgmeyers/obsidian-pandoc-reference-list) to take care of the internal linking.
+
+
+### Transpilation of transcluded notes!
+
+Another fantastic plugin is [Easy Bake](https://github.com/mgmeyers/obsidian-easy-bake) -- this "bakes-in" transclusions or embedded documents creating a compiled or "baked" Markdown document in your vault: a single file with all the content from all the embedded documents.
+
+The Impresario plugin "bakes-in" this baking into the printing process: the source document is passed through a lighter version of this process (based on code shared and used under the GNU GPL 3.0 license) before the results are passed through Pandoc.
+
+This means that you can develop your articles, presentations, and other manuscripts all the way to the completion as networked notes, and in an instant have a single cohesive document in any format Pandoc can product, without going through an intermediate compilation step.
 
 ### Slide level processed from YAML frontmatter
 
@@ -132,7 +142,11 @@ A special heading lets you keep text that you do not want rendered but want to m
 
 ## Development State
 
-Working alpha.
+> [!quote]
+>
+> > "She may not look like much, but she's got it where it counts."
+>
+> -- Han Solo, Star Wars: A New Hope (1977)
 
 All the output formats are supported with default options and custom tweaks.
 
@@ -166,6 +180,11 @@ But this fails:
 
 ## License
 
-obsidian-impresario © 2023 by Jeet Sukumaran is licensed under Attribution-ShareAlike 4.0 International.
+obsidian-impresario © 2023 by Jeet Sukumaran is licensed under the GNU GPL 3.the GNU GPL 3.0.
 See LICENSE.md for more information.
+
+### Acknowledgements
+
+Embedding or transclusion printing capabilities are based on code originally written and generously shared by [Matthew Meyers](http://matthewmeye.rs): [Easy Bake](https://github.com/mgmeyers/obsidian-easy-bake/tree/master).
+
 
