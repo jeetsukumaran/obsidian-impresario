@@ -1,6 +1,6 @@
 # Obsidian Impresario
 
-
+Print your Obsidian note to any Pandoc output format, with support for: transclusions (embedded notes); native Obsidian internal link styles; native Obsidian internal image link styles; native Obsidian callouts; Tikz, Mermaid, etc. codeblocks; and rendering of SVG images.
 
 ## Features
 
