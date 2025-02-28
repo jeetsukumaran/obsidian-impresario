@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-impresario",
 	"version": "0.0.2",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "Documentation production system: print your thoughts",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

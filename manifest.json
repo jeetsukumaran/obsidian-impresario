@@ -1,9 +1,9 @@
 {
-	"id": "impresario-plugin",
+	"id": "obisidan-impresario",
 	"name": "Impresario",
 	"version": "0.0.2",
 	"minAppVersion": "1.4.14",
-	"description": "Documentation production system.",
+	"description": "Documentation production system: print your thoughts",
 	"author": "Jeet Sukumaran",
 	"authorUrl": "https://obsidian.md",
 	"fundingUrl": "https://obsidian.md/pricing",

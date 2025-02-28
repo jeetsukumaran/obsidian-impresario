@@ -1,10 +1,6 @@
 # Obsidian Impresario
 
-You focus on the content.
 
-The impresario will manage the production.
-
-Simple Pandoc wrapper that sends your Obsidian notes to the show.
 
 ## Features
 
