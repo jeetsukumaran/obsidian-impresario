@@ -864,6 +864,22 @@ export default class Impresario extends Plugin {
             callback: () => this.produceActiveFile(true, false, false, false), // arrow function for lexical closure
         });
         this.addSettingTab(new ImpresarioSettingTab(this.app, this));
+
+
+
+        this.addRibbonIcon("worm", "test!", () => {
+                // const easyBakePlugin = this.app.plugins.plugins["obsidian-easy-bake"];
+                // const easyBakePlugin = this.app.plugins.getPluginById("obsidian-easy-bake");
+                // const easyBakePlugin = this.app.plugins?.plugins?.["obsidian-easy-bake"];
+                const easyBakePlugin = (this.app as any).plugins.getPlugin("obsidian-easy-bake");
+                // const easyBakePlugin = this.app.getPlugin("obsidian-easy-bake");
+                if (!easyBakePlugin) {
+                    console.error("obsidian-easy-bake is not installed or enabled.");
+                } else {
+                    console.log("obsidian-easy-bake OK.");
+                }
+        });
+
     }
 
     onunload() {
