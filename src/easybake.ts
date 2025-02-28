@@ -11,22 +11,13 @@ export async function generateRenderedMarkdown(app: App, sourceFilePath: string)
         return false;
     }
 
-    const easyBake = (app as any).plugins.getPlugin("obsidian-easy-bake");
+    const easyBake = (app as any).plugins.getPlugin("easy-bake");
     if (!easyBake) {
         console.error("obsidian-easy-bake is not installed or enabled.");
         return false;
     }
 
-    const fileContents = await app.vault.read(file);
-
-    if (typeof easyBake.bakeToString === "function") {
-        const renderedMarkdown = await easyBake.bakeToString(fileContents, app);
-        console.log("Rendered Markdown:", renderedMarkdown);
-        return true;
-    } else {
-        console.error("obsidian-easy-bake does not expose bakeToString.");
-        return false;
-    }
+    return false;
 }
 
 export async function exportRenderedMarkdownToFile(app: App, sourceFilePath: string, outputPath: string): Promise<boolean> {
@@ -37,21 +28,23 @@ export async function exportRenderedMarkdownToFile(app: App, sourceFilePath: str
         return false;
     }
 
-    const easyBake = (app as any).plugins.getPlugin("obsidian-easy-bake");
+    const easyBake = (app as any).plugins.getPlugin("easy-bake");
     if (!easyBake) {
         console.error("obsidian-easy-bake is not installed or enabled.");
         return false;
     }
 
-    const fileContents = await app.vault.read(file);
-
-    if (typeof easyBake.bakeToFile === "function") {
-        await easyBake.bakeToFile(fileContents, app, outputPath);
-        console.log(`Rendered markdown saved to ${outputPath}`);
-        return true;
-    } else {
-        console.error("obsidian-easy-bake does not expose bakeToFile.");
-        return false;
-    }
+    return false;
+    // const fileContents = await app.vault.read(file);
+    // console.log(easyBake);
+    // const bakeFn = easyBake.api.bakeToFile;
+    // if (typeof bakeFn === "function") {
+    //     await bakeFn(fileContents, app, outputPath);
+    //     console.log(`Rendered markdown saved to ${outputPath}`);
+    //     return true;
+    // } else {
+    //     console.error("obsidian-easy-bake does not expose bakeToFile.");
+    //     return false;
+    // }
 }
 

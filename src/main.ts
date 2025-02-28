@@ -17,7 +17,7 @@ import {
 } from 'obsidian';
 import {
     exportRenderedMarkdownToFile,
-    generateRenderedMarkdown,
+    // generateRenderedMarkdown,
 } from "./easybake";
 import { spawn, exec } from "child_process";
 import * as path from "path";
@@ -605,15 +605,15 @@ class ProductionSetupModal extends Modal {
     ) {
 
         let pandocSourceFilePath = this.sourceFilePath;
-        const bakedFilePath = "test1.md"
-        const result = await exportRenderedMarkdownToFile(
-            this.app,
-            this.sourceFilePath,
-            bakedFilePath,
-        );
-        if (result) {
-            pandocSourceFilePath = bakedFilePath;
-        }
+        // const bakedFilePath = "test1.md"
+        // const result = await exportRenderedMarkdownToFile(
+        //     this.app,
+        //     this.sourceFilePath,
+        //     bakedFilePath,
+        // );
+        // if (result) {
+        //     pandocSourceFilePath = bakedFilePath;
+        // }
         const commandArgs = this.composeArgs(
             pandocSourceFilePath,
             configArgs,
