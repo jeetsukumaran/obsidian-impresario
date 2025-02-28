@@ -308,8 +308,8 @@ class ProductionSetupModal extends Modal {
         finalButtonsContainer.addButton((button: ButtonComponent) => {
             button
                 .setButtonText("Produce!")
-                .onClick(() => {
-                    this.execute(
+                .onClick(async () => {
+                    await this.execute(
                         "pandoc",
                         {
                             outputFormat: formatDropdown.value,
@@ -336,7 +336,7 @@ class ProductionSetupModal extends Modal {
         });
     }
 
-    produceSplitBibliography(
+    async produceSplitBibliography(
         isVerbose: boolean,
         outputFormat: string,
         outputDirectory: string
@@ -351,7 +351,7 @@ class ProductionSetupModal extends Modal {
             this.outputFormatMap[outputFormat],
             outputDirectory,
         );
-        this.execute(
+        await this.execute(
             "pandoc",
             {
                 outputFormat: outputFormat,
@@ -361,7 +361,7 @@ class ProductionSetupModal extends Modal {
                 isSuppressBibliography: "true",
             },
         );
-        this.execute(
+        await this.execute(
             "pandoc",
             {
                 outputFormat: outputFormat,
@@ -424,7 +424,7 @@ class ProductionSetupModal extends Modal {
         // runCommand(pandocCommandBibliographyOnly, outputSubpathBibliographyOnly);
     }
 
-    backgroundRun(isSplitBibliography: boolean = false, isVerbose: boolean = false) {
+    async backgroundRun(isSplitBibliography: boolean = false, isVerbose: boolean = false) {
         let outputFormat = this.defaultOutputFormat();
         let outputDirectory = this.defaultOutputDirectory();
         this.outputSubpath = this.composeOutputSubpath(
@@ -432,13 +432,13 @@ class ProductionSetupModal extends Modal {
             outputDirectory || "",  // Changed from textContent to value
         );
         if (isSplitBibliography) {
-            this.produceSplitBibliography(
+            await this.produceSplitBibliography(
                 isVerbose,
                 outputFormat,
                 outputDirectory,
             )
         } else {
-            this.execute(
+            await this.execute(
                 "pandoc",
                 {
                     outputFormat: outputFormat,
@@ -599,16 +599,23 @@ class ProductionSetupModal extends Modal {
         return args;
     }
 
-    execute(
+    async execute(
         commandPath: string,
         configArgs: { [key: string]: string }
     ) {
 
         let pandocSourceFilePath = this.sourceFilePath;
-
-
-        const commandArgs = this.composeArgs(
+        const bakedFilePath = "test1.md"
+        const result = await exportRenderedMarkdownToFile(
+            this.app,
             this.sourceFilePath,
+            bakedFilePath,
+        );
+        if (result) {
+            pandocSourceFilePath = bakedFilePath;
+        }
+        const commandArgs = this.composeArgs(
+            pandocSourceFilePath,
             configArgs,
         );
         const formattedCommand = commandPath + " " + commandArgs.join(" ");
