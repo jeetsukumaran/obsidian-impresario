@@ -474,7 +474,7 @@ class ProductionSetupModal extends Modal {
         return rval || "";
     }
 
-    composeArgs(configArgs: { [key: string]: string }): string[] {
+    composeArgs(pandocSourceFilePath: string, configArgs: { [key: string]: string }): string[] {
         const outputAbsolutePath = configArgs.outputAbsolutePath;
         const fromElements = [
             "markdown",
@@ -495,7 +495,7 @@ class ProductionSetupModal extends Modal {
             "--standalone",
             "-t", configArgs.outputFormat,
             "--resource-path", this.vaultRootPath,
-            this.sourceFileAbsolutePath,
+            pandocSourceFilePath,
             "-o", outputAbsolutePath,
         ];
         if (true) {
@@ -599,7 +599,7 @@ class ProductionSetupModal extends Modal {
         commandPath: string,
         configArgs: { [key: string]: string }
     ) {
-        const commandArgs = this.composeArgs(configArgs);
+        const commandArgs = this.composeArgs(this.sourceFilePath, configArgs);
         const formattedCommand = commandPath + " " + commandArgs.join(" ");
         const outputAbsolutePath = configArgs.outputAbsolutePath;
         const modal = new OutputModal(
