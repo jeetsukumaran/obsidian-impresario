@@ -17,7 +17,7 @@ import {
 } from 'obsidian';
 
 
-async function generateRenderedMarkdown(app: App, file: TFile): Promise<boolean> {
+export async function generateRenderedMarkdown(app: App, file: TFile): Promise<boolean> {
     const easyBake = (app as any).plugins.getPlugin("obsidian-easy-bake");
     if (!easyBake) {
         console.error("obsidian-easy-bake is not installed or enabled.");
@@ -37,7 +37,7 @@ async function generateRenderedMarkdown(app: App, file: TFile): Promise<boolean>
     }
 }
 
-async function exportRenderedMarkdownToFile(app: App, file: TFile, outputPath: string): Promise<boolean> {
+export async function exportRenderedMarkdownToFile(app: App, file: TFile, outputPath: string): Promise<boolean> {
     const easyBake = (app as any).plugins.getPlugin("obsidian-easy-bake");
     if (!easyBake) {
         console.error("obsidian-easy-bake is not installed or enabled.");

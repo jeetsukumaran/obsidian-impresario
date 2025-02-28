@@ -15,6 +15,10 @@ import {
     TFolder,
     TAbstractFile,
 } from 'obsidian';
+import {
+    exportRenderedMarkdownToFile,
+    generateRenderedMarkdown,
+} from "./easybake";
 import { spawn, exec } from "child_process";
 import * as path from "path";
 import * as os from 'os';
@@ -599,7 +603,14 @@ class ProductionSetupModal extends Modal {
         commandPath: string,
         configArgs: { [key: string]: string }
     ) {
-        const commandArgs = this.composeArgs(this.sourceFilePath, configArgs);
+
+        let pandocSourceFilePath = this.sourceFilePath;
+
+
+        const commandArgs = this.composeArgs(
+            this.sourceFilePath,
+            configArgs,
+        );
         const formattedCommand = commandPath + " " + commandArgs.join(" ");
         const outputAbsolutePath = configArgs.outputAbsolutePath;
         const modal = new OutputModal(
