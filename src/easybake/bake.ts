@@ -86,18 +86,19 @@ export async function bake(
     };
 
     if (!isMarkdownFile) {
-      // Skip link processing if we're not converting file links...
-      if (!settings.convertFileLinks) continue;
-
-      const adapter = app.vault.adapter as FileSystemAdapter;
-
-      // FYI: The mobile adapter also has getFullPath so this should work on mobile and desktop
-      //      The mobile adapter isn't exported in the public API, however
-      if (!adapter.getFullPath) continue;
-      const fullPath = adapter.getFullPath(linkedFile.path);
-      const protocol = Platform.isWin ? 'file:///' : 'file://';
-      replaceTarget(`![](${protocol}${encodeURI(fullPath)})`);
       continue;
+      // // Skip link processing if we're not converting file links...
+      // if (!settings.convertFileLinks) continue;
+
+      // const adapter = app.vault.adapter as FileSystemAdapter;
+
+      // // FYI: The mobile adapter also has getFullPath so this should work on mobile and desktop
+      // //      The mobile adapter isn't exported in the public API, however
+      // if (!adapter.getFullPath) continue;
+      // const fullPath = adapter.getFullPath(linkedFile.path);
+      // const protocol = Platform.isWin ? 'file:///' : 'file://';
+      // replaceTarget(`![](${protocol}${encodeURI(fullPath)})`);
+      // continue;
     }
 
     // Replace the link with its text if the it's inline or would create an infinite loop

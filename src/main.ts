@@ -568,88 +568,38 @@ class ProductionSetupModal extends Modal {
         return args;
     }
 
-    // async execute(
-    //     commandPath: string,
-    //     configArgs: { [key: string]: string }
-    // ) {
-
-    //     let pandocSourceFilePath = this.sourceFilePath;
-    //     const bakedFilePath = "test1.md"
-    //     const easyBakeApi = new EasyBakeApi(app);
-    //     const bakeSettings = {
-    //         bakeLinks: true,
-    //         bakeEmbeds: true,
-    //         bakeInList: true,
-    //         convertFileLinks: true,
-    //     };
-    //     const compiledSourceData = await easyBakeApi.bakeToString(this.sourceFilePath, bakeSettings);
-
-    //     const commandArgs = this.composeArgs(
-    //         pandocSourceFilePath,
-    //         configArgs,
-    //     );
-    //     const formattedCommand = commandPath + " " + commandArgs.join(" ");
-    //     const outputAbsolutePath = configArgs.outputAbsolutePath;
-    //     const modal = new OutputModal(
-    //         app,
-    //         formattedCommand,
-    //         configArgs.outputSubpath,
-    //         this.isAutoOpenOutput,
-    //         this.isAutoClose,
-    //     );
-    //     try {
-    //         modal.open();
-    //         ensureParentDirectoryExists(this.app, this.outputSubpath)
-    //             .then(() => {
-    //                 const process = spawn(commandPath, commandArgs, { cwd: os.tmpdir() });
-    //                 modal.setMessage("Starting production run");
-    //                 modal.registerStartedProcess();
-    //                 process.stdout?.on('data', (data) => {
-    //                     modal.appendOutput(data);
-    //                 });
-    //                 process.stderr?.on('data', (data) => {
-    //                     modal.appendError(data);
-    //                 });
-    //                 process.on('close', (code) => {
-    //                     if (code === 0) {
-    //                         modal.setMessage(`Document successfully produced: '${outputAbsolutePath}'`);
-    //                     } else {
-    //                         modal.setMessage(`Document production failed with code: ${code}`);
-    //                     }
-    //                     modal.registerClosedProcess();
-    //                 });
-    //             })
-    //             .catch();
-    //     } catch (err) {
-    //         modal.appendMessage(`Failed to produce document: ${err}`);
-    //     }
-    // }
-
     async execute(
         commandPath: string,
         configArgs: { [key: string]: string }
     ) {
+
         let pandocSourceFilePath = this.sourceFilePath;
-        const easyBakeApi = new EasyBakeApi(app);
-        const bakeSettings = {
-            bakeLinks: true,
-            bakeEmbeds: true,
-            bakeInList: true,
-            convertFileLinks: true,
-        };
-        const compiledSourceData = await easyBakeApi.bakeToString(this.sourceFilePath, bakeSettings);
-
         let tempFilePath: string | null = null;
+        let isEasyBake = true;
 
-        if (compiledSourceData?.trim()) {
-            try {
-                tempFilePath = join(tmpdir(), `pandoc_temp_${Date.now()}.md`);
-                await writeFile(tempFilePath, compiledSourceData, 'utf8');
-                pandocSourceFilePath = tempFilePath;
-            } catch (error) {
-                console.error("Failed to create temporary file:", error);
-                return;
+        if (isEasyBake) {
+            const easyBakeApi = new EasyBakeApi(app);
+            const bakeSettings = {
+                bakeLinks: true,
+                bakeEmbeds: true,
+                bakeInList: true,
+                convertFileLinks: true,
+            };
+            const compiledSourceData = await easyBakeApi.bakeToString(this.sourceFilePath, bakeSettings);
+            if (compiledSourceData?.trim()) {
+                try {
+                    tempFilePath = join(tmpdir(), `pandoc_temp_${Date.now()}.md`);
+                    if (tempFilePath !== null && tempFilePath) {
+                        await writeFile(tempFilePath, compiledSourceData, 'utf8');
+                        pandocSourceFilePath = tempFilePath;
+                    }
+                } catch (error) {
+                    console.error("Failed to create temporary file:", error);
+                    return;
+                }
             }
+        } else {
+            pandocSourceFilePath = this.composeAbsolutePath(pandocSourceFilePath);
         }
 
         const commandArgs = this.composeArgs(pandocSourceFilePath, configArgs);
@@ -682,7 +632,7 @@ class ProductionSetupModal extends Modal {
             process.on('close', async (code) => {
                 if (code === 0) {
                     modal.setMessage(`Document successfully produced: '${outputAbsolutePath}'`);
-                    if (tempFilePath) {
+                    if (tempFilePath !== null && tempFilePath) {
                         try {
                             await unlink(tempFilePath);
                         } catch (err) {
@@ -691,7 +641,7 @@ class ProductionSetupModal extends Modal {
                     }
                 } else {
                     modal.setMessage(`Document production failed with code: ${code}`);
-                    if (tempFilePath) {
+                    if (tempFilePath !== null && tempFilePath) {
                         console.error("Temporary file retained:", tempFilePath);
                     }
                 }
@@ -699,7 +649,7 @@ class ProductionSetupModal extends Modal {
             });
         } catch (err) {
             modal.appendMessage(`Failed to produce document: ${err}`);
-            if (tempFilePath) {
+            if (tempFilePath !== null && tempFilePath) {
                 console.error("Temporary file retained:", tempFilePath);
             }
         }
