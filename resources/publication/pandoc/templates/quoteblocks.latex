@@ -55,7 +55,7 @@
     middlelinewidth=0.4pt,          % Default: 0.4pt
     middlelinecolor=black,          % Default: black
     % hidealllines=false,             % Default: false
-    leftmargin=15pt,                 % Default: 0pt
+    leftmargin=-2.5pt,                 % Default: 0pt
     rightmargin=0pt,                % Default: 0pt
     % Split settings
     splitbottomskip=\baselineskip,  % Default: \baselineskip
