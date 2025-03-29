@@ -34,7 +34,7 @@
     % Background settings
     backgroundcolor=shadecolor,      % Default: none
     % Margin settings
-    innerleftmargin=5pt,            % Default: 5pt
+    innerleftmargin=0pt,            % Default: 5pt
     innerrightmargin=0pt,           % Default: 5pt
     % innertopmargin=\baselineskip,   % Default: \baselineskip
     % innerbottommargin=\baselineskip,% Default: \baselineskip
