@@ -34,8 +34,8 @@
     % Background settings
     backgroundcolor=shadecolor,      % Default: none
     % Margin settings
-    innerleftmargin=-15pt,            % Default: 5pt
-    innerrightmargin=-15pt,           % Default: 5pt
+    innerleftmargin=5pt,            % Default: 5pt
+    innerrightmargin=0pt,           % Default: 5pt
     % innertopmargin=\baselineskip,   % Default: \baselineskip
     % innerbottommargin=\baselineskip,% Default: \baselineskip
     % Spacing settings
@@ -55,7 +55,7 @@
     middlelinewidth=0.4pt,          % Default: 0.4pt
     middlelinecolor=black,          % Default: black
     % hidealllines=false,             % Default: false
-    leftmargin=-2.5pt,                 % Default: 0pt
+    leftmargin=0pt,                 % Default: 0pt
     rightmargin=0pt,                % Default: 0pt
     % Split settings
     splitbottomskip=\baselineskip,  % Default: \baselineskip
