@@ -564,7 +564,8 @@ class ProductionSetupModal extends Modal {
             args.push("--slide-level", slideLevel);
             args.push("--include-in-header", this.composeResourcePath("publication", "pandoc", "templates", "beamer-preamble.tex"));
         }
-        // args.push("--pdf-engine", "xelatex")
+        args.push("--pdf-engine", "xelatex")
+        // args.push("--pdf-engine", "lualatex")
         return args;
     }
 
