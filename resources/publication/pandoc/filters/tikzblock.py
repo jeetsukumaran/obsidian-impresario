@@ -28,7 +28,7 @@ def tikz_to_latex_advanced(key, value, format, meta):
             latex = (
                 '\\par\n'
                 '\\begin{center}\n'
-                '\\begin{tikzpicture}[domain=0:4]\n' +
+                '\\begin{tikzpicture}[baseline=(current bounding box.center)]\n' +
                 tikz_code +
                 '\n\\end{tikzpicture}\n'
                 '\\end{center}\n'
