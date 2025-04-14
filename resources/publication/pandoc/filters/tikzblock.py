@@ -24,7 +24,16 @@ def tikz_to_latex_advanced(key, value, format, meta):
             # sys.stderr.write(f"\n>>>\n{tikz_code}\n<<<")
             tikz_code = end_doc_pattern.sub("", tikz_code, 1)
             # sys.stderr.write(f"\n>>>\n{tikz_code}\n<<<")
-            latex = '\\begin{tikzpicture}[domain=0:4]\n' + tikz_code + '\n\\end{tikzpicture}'
+            # latex = '\\begin{tikzpicture}[domain=0:4]\n' + tikz_code + '\n\\end{tikzpicture}'
+            latex = (
+                '\\par\n'
+                '\\begin{center}\n'
+                '\\begin{tikzpicture}[domain=0:4]\n' +
+                tikz_code +
+                '\n\\end{tikzpicture}\n'
+                '\\end{center}\n'
+                '\\par'
+            )
             return RawBlock('latex', latex)
 
 if __name__ == "__main__":
