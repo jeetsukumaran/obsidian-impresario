@@ -36,8 +36,8 @@
     % Margin settings
     innerleftmargin=0pt,            % Default: 5pt
     innerrightmargin=0pt,           % Default: 5pt
-    % innertopmargin=\baselineskip,   % Default: \baselineskip
-    % innerbottommargin=\baselineskip,% Default: \baselineskip
+    innertopmargin=\baselineskip,   % Default: \baselineskip
+    innerbottommargin=\baselineskip,% Default: \baselineskip
     % Spacing settings
     % skipabove=\baselineskip,        % Default: \baselineskip
     % skipbelow=\baselineskip,        % Default: \baselineskip
