@@ -542,6 +542,21 @@ class ProductionSetupModal extends Modal {
                 "--lua-filter", this.composeResourcePath("publication", "pandoc", "filters", "boxes.lua")
             ]);
         }
+        if (
+                configArgs.outputFormat === "slidy"
+                || configArgs.outputFormat === "html5"
+                || configArgs.outputFormat === "revealjs") {
+            args.push("--standalone");
+            args.push("--embed-resources");
+        }
+        if (configArgs.outputFormat === "revealjs") {
+            // args.push("-V revealjs-url=http://lab.hakim.se/reveal-js");
+            // args.push("-V revealjs-url=-V revealjs-url=https://cdn.jsdelivr.net/npm/reveal.js@4.6.1");
+            // args.push("-V revealjs-url=https://cdn.jsdelivr.net/npm/reveal.js");
+            args.push("-V");
+            args.push("revealjs-url=https://cdn.jsdelivr.net/npm/reveal.js");
+            // args.push("revealjs-url=/home/jeetsukumaran/site/storage/local/note/service/obsidian/plugins/20231228_obsidian-impresario/obsidian-impresario/resources/publication/revealjs/reveal.js-master/dist/");
+        }
         if (configArgs.outputFormat === "pdf" || configArgs.outputFormat === "beamer") {
             args.push("--include-in-header", this.composeResourcePath(
                 "publication",
